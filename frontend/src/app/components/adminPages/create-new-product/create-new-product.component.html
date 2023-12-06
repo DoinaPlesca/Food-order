@@ -1,0 +1,73 @@
+<html lang="en">
+<body class="sub_page">
+
+<div class="hero_area">
+  <div class="bg-box">
+    <img src="/assets/images/hero-bg.jpg" alt="">
+  </div>
+
+  <!-- header section -->
+  <header class="header_section">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg custom_nav-container">
+        <a class="navbar-brand" href="index.html">
+          <span>FlavorFrame</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+</div>
+
+<!-- Add the form for creating a new product -->
+<div class="container">
+  <form id="productForm" class="product-form">
+    <div class="form-row">
+      <label for="productName">Product Name:</label>
+      <input type="text" id="productName" name="productName" required>
+    </div>
+
+    <div class="form-row">
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" required></textarea>
+    </div>
+
+    <div class="form-row">
+      <label for="imageUrl">Image URL:</label>
+      <input type="text" id="imageUrl" name="imageUrl" required>
+    </div>
+
+    <div class="form-row">
+      <label for="price">Price:</label>
+      <input type="number" id="price" name="price" required>
+    </div>
+
+    <div class="form-row">
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" name="quantity" required>
+    </div>
+
+    <div class="form-row">
+      <label for="category">Category:</label>
+      <select id="category" name="category" required>
+        <option *ngFor="let category of categories">{{ category.categoryName }}</option>
+      </select>
+    </div>
+  </form>
+
+  <form id="image-form" class="side-form">
+    <div class="side-panel">
+      <div class="form-row image-preview">
+        <img id="imagePreview" src="" alt="Image Preview">
+      </div>
+    </div>
+  </form>
+
+  <form id="button-form" class="down-form">
+    <div class="button-container">
+      <button type="button" (click)="saveProduct()">Save</button>
+      <button type="button" (click)="cancelCreation()">Cancel</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,211 @@
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Open+Sans:wght@400;600;700&display=swap");
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", sans-serif;
+  color: #0c0c0c;
+  background-color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* Header Section  */
+.top-bar {
+  background-color: black;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  padding-right: 80%;
+
+  @media (max-width: 1300px) {
+    padding-left: 15px;
+  }
+  @media (max-width: 992px) {
+    padding-left: 10px;
+  }
+}
+
+/* Cards-Top */
+.card.card-block-small {
+  padding: 15px 20px;
+}
+
+.col-md-6 .card.widget-card-1 {
+  height: 70px;
+  margin-top: 40px;
+  margin-bottom: 65px;
+  text-align: center;
+  background: #ffbe33;
+}
+
+.widget-card-1 .card1-icon {
+  width: 70px;
+  height: 70px;
+  position: absolute;
+  top: -15px;
+  font-size: 35px;
+  border-radius: 8px;
+  display: flex;
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.widget-card-1 h4 {
+  font-weight: 400;
+  margin-top: 10px;
+}
+
+.widget-card-1:hover .card1-icon {
+  top: -25px;
+}
+
+.food-icon {
+  width: 70px;
+  height: 70px;
+  margin-right: 20px;
+}
+
+/* Statistic card */
+.custom-card {
+
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.custom-card .card-header {
+  background-color: #ffbe33;
+  padding: 15px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  color: #fff;
+}
+
+.custom-card .card-header h5 {
+  margin-bottom: 0;
+}
+
+.custom-card .card-header-right {
+  float: right;
+}
+
+.custom-card .card-header-right ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.custom-card .card-header-right ul li {
+  display: inline-block;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.custom-card .card-block {
+  padding: 20px;
+}
+/* Right Cards */
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.card-header {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.card-block {
+  padding: 20px;
+}
+
+.row {
+  margin: 0;
+}
+
+.col-6 {
+  padding: 0 10px;
+}
+
+.text-muted {
+  color: #888;
+}
+
+.fb-card .card-header {
+  background-color: #3b5998;
+  color: #fff;
+}
+
+.dribble-card .card-header {
+  background-color: #ea4c89;
+  color: #fff;
+}
+
+.twitter-card .card-header {
+  background-color: #1da1f2;
+  color: #fff;
+}
+
+
+.delete-button {
+  display: inline-block;
+  background-color:#ffcccc; ;
+  font-size: 15px;
+  margin-right: 4px;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  margin-top: 18px;
+
+}
+
+.edit-button {
+  align-self: auto;
+  background-color: #cce5ff;;
+  font-size: 15px;
+  display: inline-block;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  margin-top: 18px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media only screen and (max-width: 1366px) { }
+
+ @media only screen and (max-width: 991px) { }
+
+ @media only screen and (min-width: 768px) and (max-width: 872px) {}
+
+ @media only screen and (max-width: 768px) {  }
+
+

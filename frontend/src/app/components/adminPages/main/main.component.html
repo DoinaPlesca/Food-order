@@ -1,0 +1,194 @@
+<html lang="en">
+<div #sharedContent></div>
+
+<body class="sub_page">
+<header class="header_section">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-...">
+  <div class="top-bar">
+    <a class="navbar-brand" href="index.html">
+      <span>FlavorFrame</span>
+    </a>
+  </div>
+</header>
+
+<div class="page-body">
+  <div class="row">
+    <!-- card1 start -->
+    <div class="col-md-6 col-xl-3"(click)="switchDisplay('categories')">
+      <div class="card widget-card-1">
+        <div class="card-block-small">
+          <img src="/assets/images/burger.png" alt="FoodIcons" class="card1-icon">
+          <h4 class="text-c-blue f-w-600">Categories</h4>
+
+          <button class="round-button">
+            <a class="nav-link" href="create-new-product.html">
+              <i class="fas fa-plus"></i> <!-- Font Awesome "Add" icon -->
+            </a>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- card1 end -->
+    <!-- card1 start -->
+    <div class="col-md-6 col-xl-3"(click)="switchDisplay('products')">
+      <div class="card widget-card-1">
+        <div class="card-block-small">
+          <img src="assets/images/f6.png" alt="FoodIcons" class="card1-icon">
+          <h4 class="text-c-blue f-w-600">Products</h4>
+
+
+          <button class="round-button">
+            <a class="nav-link" href="create-new-product.html">
+              <i class="fas fa-plus"></i> <!-- Font Awesome "Add" icon -->
+            </a>
+          </button>
+
+
+        </div>
+      </div>
+    </div>
+    <!-- card1 end -->
+    <!-- card1 start -->
+    <div class="col-md-6 col-xl-3">
+      <div class="card widget-card-1">
+        <div class="card-block-small">
+          <img src="/assets/images/dinner-table.png" alt="FoodIcons" class="card1-icon">
+          <h4 class="text-c-blue f-w-600">Reservation</h4>
+        </div>
+      </div>
+    </div>
+    <!-- card1 end -->
+    <!-- card1 start -->
+    <div class="col-md-6 col-xl-3">
+      <div class="card widget-card-1">
+        <div class="card-block-small">
+          <img src="/assets/images/take-away.png" alt="FoodIcons" class="card1-icon">
+          <h4 class="text-c-blue f-w-600">Online Orders</h4>
+        </div>
+      </div>
+    </div>
+    <!-- card1 end -->
+
+    <!-- Statestics Start -->
+    <div class="col-md-12 col-xl-8">
+      <div class="card custom-card">
+        <div class="card-header">
+          <h5>{{ displayType === 'products' ? 'Products' : 'Categories' }}</h5>
+          <th *ngIf="displayType === 'categories' || displayType === 'products'"></th>
+        </div>
+        <div class="card-block">
+          <table id="dataTable" class="table"
+                 [ngClass]="{'category-table': displayType === 'categories',
+                 'product-table': displayType === 'products'}">
+            <thead>
+            <tr>
+              <th *ngFor="let header of getTableHeaders() ">{{ header }}</th>
+              <th *ngIf="displayType === 'categories' || displayType === 'products'"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of getData()">
+              <ng-container *ngFor="let property of getTableProperties(item); let i = index">
+                <!--category table-->
+                <td *ngIf="displayType === 'categories' && i === 2 && i >= 1">
+                  <img [src]="property" alt="Category Image" style="max-width: 50px; max-height: 50px;">
+                </td>
+
+
+                <td *ngIf="displayType === 'categories' && i !== 2 && i >= 1">{{ property }}</td>
+                 <!--products table-->
+                <td *ngIf="displayType === 'products' && i >= 1 && i !== 5 && i !== 6 && i !== 8 ">
+                  {{  property }}
+                </td>
+              </ng-container>
+
+
+              <td *ngIf="displayType === 'categories' || displayType === 'products'" >
+                <button (click)="onDeleteItemClick(item)" class="delete-button">
+                  Delete
+                </button>
+                <button (click)="onEditItemClick(item)" class="edit-button">
+                  Edit
+                </button>
+              </td>
+
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!--Right Cards-->
+    <div class="col-md-12 col-xl-4">
+      <div class="card fb-card">
+        <div class="card-header">
+          <i class="icofont icofont-social-facebook"></i>
+          <div class="d-inline-block">
+            <h5>facebook</h5>
+            <span>blog page timeline</span>
+          </div>
+        </div>
+        <div class="card-block text-center">
+          <div class="row">
+            <div class="col-6 b-r-default">
+              <h2>23</h2>
+              <p class="text-muted">Active</p>
+            </div>
+            <div class="col-6">
+              <h2>23</h2>
+              <p class="text-muted">Comment</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card dribble-card">
+        <div class="card-header">
+          <i class="icofont icofont-social-dribbble"></i>
+          <div class="d-inline-block">
+            <h5>dribble</h5>
+            <span>Product page analysis</span>
+          </div>
+        </div>
+        <div class="card-block text-center">
+          <div class="row">
+            <div class="col-6 b-r-default">
+              <h2>23</h2>
+              <p class="text-muted">Live</p>
+            </div>
+            <div class="col-6">
+              <h2>23</h2>
+              <p class="text-muted">Message</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card twitter-card">
+        <div class="card-header">
+          <i class="icofont icofont-social-twitter"></i>
+          <div class="d-inline-block">
+            <h5>twitter</h5>
+            <span>current new timeline</span>
+          </div>
+        </div>
+        <div class="card-block text-center">
+          <div class="row">
+            <div class="col-6 b-r-default">
+              <h2>25</h2>
+              <p class="text-muted">new tweet</p>
+            </div>
+            <div class="col-6">
+              <h2>450+</h2>
+              <p class="text-muted">Follower</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+
