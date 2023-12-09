@@ -26,37 +26,30 @@ export class ErrorService {
     }
   }
 
-  showSuccess(message: string, title: string = 'Success', options?: Partial<IndividualConfig>): void {
-    this.toastr.success(message, title, options);
-  }
-
-
-  showError(message: string, title: string = 'Error', options?: Partial<IndividualConfig>): void {
-    this.toastr.error(message, title, options);
-  }
-
-  showFileError(): void {
-    this.showError('Error uploading file. Please try again.', 'File Error', { timeOut: 5000 });
-  }
-
   showCategorySuccess(): void {
-    this.showSuccess('Category was successfully created', 'Success', {
-      timeOut: 5000,
-      progressBar: true,
-      closeButton: true,
-      toastClass: 'custom-toast-success',
-      positionClass: 'toast-top-center'
-    });
-  }
-  showCategoryError(): void {
-    this.showError('Error performing category operation. Please try again.', 'Category Error', {
-      timeOut: 5000,
-      progressBar: true,
-      closeButton: true,
-      toastClass: 'custom-toast-error',
-      positionClass: 'toast-top-center'
-    });
+    this.showSuccess('Category was successfully created');
   }
 
+  showCategoryError(message: string): void {
+    this.showError('Error performing category operation. Please try again.', 'Category Error', message);
+  }
+  showProductSuccess(): void {
+    this.showSuccess('Category was successfully created');
+  }
 
+  showProductError(message: string): void {
+    this.showError('Error performing category operation. Please try again.', 'Category Error', message);
+  }
+
+ showSuccess(message: string): void {
+    this.toastr.success(message, 'Success');
+  }
+
+  showError(message: string, title: string, additionalMessage?: string): void {
+    this.toastr.error(`${message} ${additionalMessage || ''}`, title);
+  }
+
+  showProductValidationError(message: string): void {
+    this.showError(message, 'Product Validation Error');
+  }
 }

@@ -25,7 +25,7 @@ public class ProductRepository
            description AS {nameof(ProductFeedQuery.Description)},
            price AS {nameof(ProductFeedQuery.Price)},
            quantity AS {nameof(ProductFeedQuery.Quantity)},
-           image_url AS {nameof(ProductFeedQuery.Image_url)},
+           image_url AS {nameof(ProductFeedQuery.ImageUrl)},
            category_id AS {nameof(ProductFeedQuery.CategoryId)}
     
      
@@ -146,7 +146,7 @@ public class ProductRepository
             p.description AS {nameof(ProductFeedQuery.Description)},
             p.price AS {nameof(ProductFeedQuery.Price)},
             p.quantity AS {nameof(ProductFeedQuery.Quantity)},
-            p.image_url AS {nameof(ProductFeedQuery.Image_url)},
+            p.image_url AS {nameof(ProductFeedQuery.ImageUrl)},
             p.category_id AS {nameof(ProductFeedQuery.CategoryId)}
         FROM food_order.""Product"" p
         JOIN food_order.""Category"" c ON p.category_id = c.categoryid

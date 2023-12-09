@@ -7,6 +7,7 @@ import { environment } from 'src/app/environments/environment';
 import { Category } from 'src/app/models/category';
 import { Product } from 'src/app/models/product';
 import { ResponseDto } from 'src/app/models/responsiveHelper/responseDto';
+import { ErrorService } from 'src/app/services/errorService';
 import { ProductService } from 'src/app/services/productService';
 import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.service';
 import { State } from 'src/app/services/state';
@@ -39,7 +40,9 @@ export class CreateNewProductComponent implements OnInit{
     private fb: FormBuilder,
     private http: HttpClient,
     private state: State,
-    public router: Router,
+    private router: Router,
+    private errorService: ErrorService
+
 
 
 
@@ -49,7 +52,7 @@ export class CreateNewProductComponent implements OnInit{
       description: '',
       price: '',
       quantity: '',
-      imageUrl: 'https://plus.unsplash.com/premium_photo-1663852705829-aa8707495e2e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fGZvb2R8ZW58MHx8MHx8fDA%3D' ,
+      imageUrl: '' ,
       categoryId: '',
     });
   }
@@ -93,13 +96,9 @@ export class CreateNewProductComponent implements OnInit{
         const categoryId = this.productForm.get('categoryId')?.value;
 
         if (!categoryId) {
-          console.error('Please select a category.');
+          this.errorService.showProductValidationError('Please select a category.');
           return;
         }
-        this.productForm.get('imageUrl')?.value;
-        const imageUrl= this.productForm.get('imageUrl')?.value;
-
-        console.log(imageUrl);
 
         const productData = { ...this.productForm.getRawValue(), categoryId };
         console.log('Request Payload:', productData);
@@ -108,25 +107,22 @@ export class CreateNewProductComponent implements OnInit{
           environment.BASE_URL + '/food/order/new/product',
           productData
         );
-
         const response = await firstValueFrom(observable);
-
         if (response && response.responseData) {
-          // Update the product's category information
           const productWithCategory = { ...response.responseData, category: { categoryId } };
 
-          // Push the updated product to the state
           this.state.products.push(productWithCategory);
+          this.errorService.showProductSuccess();
+          this.router.navigate(['/main.html']);
 
-          console.log('Product created successfully:', productWithCategory);
         } else {
-          console.error('Failed to get valid response data.');
+          this.errorService.showProductError('Failed to get valid response data.');
         }
       } catch (error) {
-        console.error('An error occurred while saving the product:', error);
+        this.errorService.showProductError('An error occurred while saving the product.');
       }
     } else {
-      console.log('Please provide all the required values!');
+      this.errorService.showProductValidationError('Please provide all the required values!');
     }
   }
 

@@ -69,27 +69,19 @@ export class CreateCategoryComponent implements OnInit{
         if (response && response.responseData) {
           this.state.categories.push(response.responseData);
           this.errorService.showCategorySuccess();
-
+          this.router.navigate(['/main.html']);
         }
-        this.router.navigate(['/main.html']);
-
       } catch (e) {
         if (e instanceof HttpErrorResponse) {
-          console.error(e.error.messageToClient);
           this.errorService.handleHttpError(e);
-
-          if (e.error && e.error.fileError) {
-           this.errorService.showCategoryError();
-          }
         } else {
           console.error('An unexpected error occurred', e);
         }
       }
     } else {
-      console.error('Please provide all the required values!');
+      this.errorService.showCategoryError('Please provide all the required values!');
     }
   }
-
 
   get errorControl() {
     return this.categoryForm.controls;
