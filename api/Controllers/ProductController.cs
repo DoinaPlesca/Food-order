@@ -37,7 +37,7 @@ public class ProductController : ControllerBase
 
     [HttpPost]
     [ValidateModel]
-    [Route("/food/order/product")]
+    [Route("/food/order/new/product")]
     public IActionResult CreateProduct([FromBody] CreateProductRequest dto)
     {
         try

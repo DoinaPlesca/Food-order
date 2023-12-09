@@ -99,14 +99,8 @@ export class SharedProductCategoryService {
     return url.endsWith('.jpg') || url.endsWith('.png');
   }
 
-  async createProduct(newProduct: Product): Promise<Product> {
-    try {
-      return await this.productService.createProduct(newProduct);
-    } catch (error) {
-      console.error('Failed to create product in shared service.', error);
-      throw error;
-    }
-  }
+  
+  
 
 
 

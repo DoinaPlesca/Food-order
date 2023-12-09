@@ -8,10 +8,10 @@ public class CreateCategoryRequest
     [NotNull]
     [Required]
     [StringLength(255, MinimumLength = 1)]
-    public string Name { get; set; }
+    public string CategoryName { get; set; }
 
     [Url]
-    public string ImageUrl { get; set; }
+    public string CategoryImageUrl{ get; set; }
     
 }
 

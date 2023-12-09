@@ -17,36 +17,36 @@ public class CategoryRepository
     
     public IEnumerable<CategoryFeedQuery> GetAllCategories()
     {
-        string sql = $@"
-           SELECT
-               id AS {nameof(CategoryFeedQuery.CategoryId)},
-               name AS {nameof(CategoryFeedQuery.CategoryName)},
-               image_url AS {nameof(CategoryFeedQuery.CategoryImageUrl)}
-         
-          FROM food_order.""Category""
-       ";
-        using var
-            conn = _dataSource.OpenConnection();
+        string sql = @"
+        SELECT
+            CategoryId AS CategoryId,
+            CategoryName AS CategoryName,
+            CategoryImageUrl  AS CategoryImageUrl
+        FROM food_order.""Category""
+    ";
+
+        using var conn = _dataSource.OpenConnection();
         return conn.Query<CategoryFeedQuery>(sql);
     }
+
     
     public Category CreateCategory(string name, string imageUrl)
     {
         var newCategory = new Category
         {
             CategoryName = name,
-            CategoryImageUrl= imageUrl,
-            
+            CategoryImageUrl = imageUrl
         };
 
         string sql = @"
-        INSERT INTO food_order.""Category"" (name, image_url)
+        INSERT INTO food_order.""Category"" (CategoryName, CategoryImageUrl)
         VALUES (@CategoryName, @CategoryImageUrl)
         RETURNING *";
 
         using var conn = _dataSource.OpenConnection();
         return conn.QuerySingle<Category>(sql, newCategory);
     }
+
 
     
     public Category UpdateCategory(int id, string name, string imageUrl)
@@ -76,7 +76,7 @@ public class CategoryRepository
     {
         var sql = @"
         DELETE FROM food_order.""Category""
-        WHERE id = @CategoryId;
+        WHERE categoryId = @CategoryId;
     ";
 
         using (var conn = _dataSource.OpenConnection())
@@ -85,6 +85,7 @@ public class CategoryRepository
             return rowsAffected > 0;
         }
     }
+
 
 
 }

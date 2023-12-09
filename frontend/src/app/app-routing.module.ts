@@ -6,6 +6,7 @@ import {AboutComponent} from "./components/userPages/about/about.component";
 import {ReservationComponent} from "./components/userPages/reservation/reservation.component";
 import { MainComponent } from "./components/adminPages/main/main.component";
 import { CreateNewProductComponent } from "./components/adminPages/create-new-product/create-new-product.component";
+import { CreateCategoryComponent } from "./components/adminPages/create-category/create-category.component";
 
 
 const routes: Routes = [
@@ -15,6 +16,7 @@ const routes: Routes = [
   {path: 'reservation.html' , component: ReservationComponent},
   {path: 'main.html', component: MainComponent},
   {path: 'create-new-product.html', component: CreateNewProductComponent},
+  {path: 'create-category.html' , component: CreateCategoryComponent}
 
 
 

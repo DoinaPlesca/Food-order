@@ -20,6 +20,8 @@ import {MatSortModule} from "@angular/material/sort";
 import {MatDialogActions, MatDialogModule} from '@angular/material/dialog';
 import {MatSelect, MatSelectModule} from "@angular/material/select";
 import { CreateNewProductComponent } from './components/adminPages/create-new-product/create-new-product.component';
+import { CreateCategoryComponent } from './components/adminPages/create-category/create-category.component';
+import { ToastrModule } from 'ngx-toastr';
 
 
 @NgModule({
@@ -31,6 +33,7 @@ import { CreateNewProductComponent } from './components/adminPages/create-new-pr
     ReservationComponent,
     MainComponent,
     CreateNewProductComponent,
+    CreateCategoryComponent
 
   ],
 
@@ -43,7 +46,11 @@ import { CreateNewProductComponent } from './components/adminPages/create-new-pr
     CommonModule,
     MatSortModule,
     MatDialogActions,
-    MatDialogModule
+    MatDialogModule,
+    ToastrModule.forRoot(),
+
+
+
 
 
 

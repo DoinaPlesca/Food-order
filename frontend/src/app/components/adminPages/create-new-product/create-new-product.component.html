@@ -19,55 +19,96 @@
 </div>
 
 <!-- Add the form for creating a new product -->
-<div class="container">
-  <form id="productForm" class="product-form">
-    <div class="form-row">
-      <label for="productName">Product Name:</label>
-      <input type="text" id="productName" name="productName" required>
-    </div>
 
-    <div class="form-row">
-      <label for="description">Description:</label>
-      <textarea id="description" name="description" required></textarea>
+<ng-container *ngIf="openModal">
+  <div class="modal-overlay" (click)="cancel()"></div>
+  <div class="modal-container">
+    <div class="modal-header">
+      <button (click)="cancel()">Cancel</button>
+      <h2>Create product</h2>
+      <button (click)="saveProduct()">Confirm</button>
     </div>
+    <div class="modal-content">
+      <form [formGroup]="productForm" (ngSubmit)="saveProduct()" novalidate>
+        <div class="form-group">
+          <label for="name">Product name</label>
+          <input
+            id="name"
+            formControlName="name"
+            type="text"
+            aria-label="Product name"
+          />
+          <div *ngIf="this.productForm?.controls?.name?.touched && this.productForm?.controls?.name?.invalid">
+            <div  *ngIf="this.productForm?.controls?.name?.errors?.['required']">
+              <span>Name is required.</span>
+            </div>
+            <div *ngIf="this.productForm?.controls?.name?.errors?.['minlength']">
+              <span>Name should be min 5 chars long.</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <input
+            id="description"
+            formControlName="description"
+            type="text"
+            aria-label="Description"
+          />
+          <div *ngIf="this.productForm?.controls?.description?.touched && this.productForm?.controls?.description?.invalid">
+            <div *ngIf="this.productForm?.controls?.description?.errors?.['required']">
+              <span>Description is required.</span>
+            </div>
+            <div *ngIf="this.productForm?.controls?.description?.errors?.['pattern']">
+              <span>Please provide a valid description.</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="price">Price</label>
+          <input
+            id="price"
+            formControlName="price"
+            type="text"
+            aria-label="Price"/>
+          <div *ngIf="this.productForm?.controls?.price?.touched && this.productForm?.controls?.price?.invalid">
+            <div *ngIf="this.productForm?.controls?.price?.errors?.['required']">
+              <span>Price is required.</span>
+            </div>
+            <div *ngIf="this.productForm?.controls?.price?.errors?.['pattern']">
+              <span>Price must be a positive number.</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="quantity">Quantity</label>
+          <input
+            id="quantity"
+            formControlName="quantity"
+            type="number"
+            aria-label="Quantity"/>
+          <div *ngIf="this.productForm?.controls?.quantity?.touched && this.productForm?.controls?.quantity?.invalid">
+            <span> Enter the desired quantity.</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="imageUrl">Image URL</label>
+          <input id="imageUrl" [formControl]=" productForm.controls.imageUrl"/>
 
-    <div class="form-row">
-      <label for="imageUrl">Image URL:</label>
-      <input type="text" id="imageUrl" name="imageUrl" required>
-    </div>
+          <img *ngIf="productForm.get('imageUrl')!.value" [src]="productForm.get('imageUrl')!.value" alt="Product Image">
+        </div>
 
-    <div class="form-row">
-      <label for="price">Price:</label>
-      <input type="number" id="price" name="price" required>
-    </div>
+        <div class="form-group">
+          <label for="categoryId">Category</label>
+          <select id="categoryId" formControlName="categoryId">
+            <option *ngFor="let category of categories" [value]="category.categoryId">{{ category.categoryName}}</option>
+          </select>
 
-    <div class="form-row">
-      <label for="quantity">Quantity:</label>
-      <input type="number" id="quantity" name="quantity" required>
+        </div>
+      </form>
     </div>
+  </div>
+</ng-container>
 
-    <div class="form-row">
-      <label for="category">Category:</label>
-      <select id="category" name="category" required>
-        <option *ngFor="let category of categories">{{ category.categoryName }}</option>
-      </select>
-    </div>
-  </form>
-
-  <form id="image-form" class="side-form">
-    <div class="side-panel">
-      <div class="form-row image-preview">
-        <img id="imagePreview" src="" alt="Image Preview">
-      </div>
-    </div>
-  </form>
-
-  <form id="button-form" class="down-form">
-    <div class="button-container">
-      <button type="button" (click)="saveProduct()">Save</button>
-      <button type="button" (click)="cancelCreation()">Cancel</button>
-    </div>
-  </form>
-</div>
 </body>
 </html>

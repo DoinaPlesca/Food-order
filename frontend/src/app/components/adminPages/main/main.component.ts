@@ -6,6 +6,8 @@ import { CategoryService } from 'src/app/services/categoryService';
 import { ProductService } from 'src/app/services/productService';
 import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.service';
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import { CreateNewProductComponent } from '../create-new-product/create-new-product.component';
+import { CreateCategoryComponent } from '../create-category/create-category.component';
 
 
 
@@ -19,17 +21,18 @@ export class MainComponent implements OnInit {
   categories: Category[] = [];
   products: Product[] = [];
   displayType: 'products' | 'categories' = 'categories';
-  
+
   constructor(
     private sharedService: SharedProductCategoryService,
     private productService: ProductService,
     private categoryService: CategoryService,
     private cdRef: ChangeDetectorRef,
-   
+    private dialog:MatDialog
+
 
   ) {}
- 
-  
+
+
   ngOnInit(): void {
     this.loadData();
   }
@@ -55,9 +58,9 @@ export class MainComponent implements OnInit {
 
   getTableHeaders(): string[] {
     if (this.displayType === 'categories') {
-      return ['Category Name', 'Image', 'Action'];
+      return ['Category Name', 'Image'];
     } else if (this.displayType === 'products') {
-      return ['Product Name', 'Description', 'Price', 'Quantity', 'Action'];
+      return ['Product Name', 'Description', 'Price', 'Quantity'];
     }
     return [];
   }
@@ -107,25 +110,32 @@ export class MainComponent implements OnInit {
     }
   }
 
-  async addProduct(newProduct: Product): Promise<void> {
-    try {
-      await this.sharedService.createProduct(newProduct);
-
-      await this.sharedService.loadAllProducts();
-      this.products = this.sharedService.getProducts();
-      this.cdRef.detectChanges();
-    } catch (error) {
-      console.error('Failed to add product in the component:', error);
-    }
-  }
 
 
-  addCategory() {
-
-  }
 
   onEditItemClick(item: Category | Product): void {
 
+  }
+
+  openModal(): void {
+    const dialogRef = this.dialog.open(CreateNewProductComponent, {
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+    });
+  }
+
+  openCategoryModal(): void {
+    const dialogRef = this.dialog.open(CreateCategoryComponent, {
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+    });
+  
+    
+    
   }
 
 
