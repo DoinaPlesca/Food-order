@@ -35,6 +35,8 @@ public class ProductRepository
     }
     
     
+    
+    
     public Product CreateProduct(string name, string description,decimal price, int quantity,
         string imageUrl, int categoryId)
     {
@@ -51,11 +53,26 @@ public class ProductRepository
         string sql = @"
         INSERT INTO food_order.""Product"" (name, description, price, quantity, image_url, category_id)
         VALUES (@Name, @Description, @Price, @Quantity, @Image_url, @CategoryId)
-        RETURNING *";
+        RETURNING id AS ProductId,name,description,price,quantity, image_url, category_id As CategoryId";
 
         using var conn = _dataSource.OpenConnection();
         return conn.QuerySingle<Product>(sql, newProduct);
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     public Product GetProductById(int id)
     {
@@ -123,17 +140,17 @@ public class ProductRepository
     public IEnumerable<ProductFeedQuery> GetProductsByCategory(int categoryId)
     {
         string sql = $@"
-            SELECT
-                p.id AS {nameof(ProductFeedQuery.ProductId)},
-                p.name AS {nameof(ProductFeedQuery.Name)},
-                p.description AS {nameof(ProductFeedQuery.Description)},
-                p.price AS {nameof(ProductFeedQuery.Price)},
-                p.quantity AS {nameof(ProductFeedQuery.Quantity)},
-                p.image_url AS {nameof(ProductFeedQuery.Image_url)},
-                p.category_id AS {nameof(ProductFeedQuery.CategoryId)}
-            FROM food_order.""Product"" p
-            JOIN food_order.""Category"" c ON p.category_id = c.id
-            WHERE c.id = @CategoryId";
+        SELECT
+            p.id AS {nameof(ProductFeedQuery.ProductId)},
+            p.name AS {nameof(ProductFeedQuery.Name)},
+            p.description AS {nameof(ProductFeedQuery.Description)},
+            p.price AS {nameof(ProductFeedQuery.Price)},
+            p.quantity AS {nameof(ProductFeedQuery.Quantity)},
+            p.image_url AS {nameof(ProductFeedQuery.Image_url)},
+            p.category_id AS {nameof(ProductFeedQuery.CategoryId)}
+        FROM food_order.""Product"" p
+        JOIN food_order.""Category"" c ON p.category_id = c.categoryid
+        WHERE c.categoryid = @CategoryId";
 
         using var conn = _dataSource.OpenConnection();
         return conn.Query<ProductFeedQuery>(sql, new { CategoryId = categoryId });
@@ -141,7 +158,7 @@ public class ProductRepository
 
     public bool CategoryExists(IDbConnection connection, int categoryId)
     {
-        var sql = "SELECT COUNT(*) FROM food_order.\"Category\" WHERE id = @categoryId";
+        var sql = "SELECT COUNT(*) FROM food_order.\"Category\" WHERE categoryid = @categoryId";
         return connection.ExecuteScalar<int>(sql, new { categoryId }) > 0;
         
         // execute a query and return the result of the first

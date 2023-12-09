@@ -6,5 +6,5 @@ public class Category
     public string CategoryName { get; set; }
     public string CategoryImageUrl { get; set; }
     
-    public ICollection<Product> Products { get; set; }
+    
 }

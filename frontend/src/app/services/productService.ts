@@ -61,23 +61,6 @@ export class ProductService {
       throw error;
     }
   }
-  async createProduct(newProduct: Product): Promise<Product> {
-    try {
-      const res: any = await firstValueFrom(
-        this.http.post<ResponseDto<Product>>(`${environment.BASE_URL}/food/order/product/`, newProduct)
-      );
-      const updatedProducts = [...this.state.getProducts(), res.responseData];
-      this.state.setProducts(updatedProducts);
-
-      console.log('Product created successfully:', res.responseData);
-      return res.responseData;
-    } catch (error) {
-      console.error('Failed to create product.', error);
-      throw error;
-    }
-  }
-
-
-
+  
 
 }

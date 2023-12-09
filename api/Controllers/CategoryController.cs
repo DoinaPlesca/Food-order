@@ -38,8 +38,19 @@ public class CategoryController : ControllerBase
     {
         try
         {
-            var newCategory = _categoryService.CreateCategory(request.Name, request.ImageUrl);
-            return Ok(_responseHelper.Success(StatusCodes.Status201Created, "Category created successfully", newCategory));
+            var newCategory = _categoryService.CreateCategory(request.CategoryName, request.CategoryImageUrl);
+
+            if (newCategory != null && newCategory.CategoryId > 0)
+            {
+                return Ok(_responseHelper.Success(StatusCodes.Status201Created, "Category created successfully", newCategory));
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, _responseHelper.InternalServerError(
+                    "Failed to create the category",
+                    "Category creation result is invalid or missing CategoryId."
+                ));
+            }
         }
         catch (Exception ex)
         {
@@ -49,6 +60,7 @@ public class CategoryController : ControllerBase
             ));
         }
     }
+
     
     
     [HttpPut]
