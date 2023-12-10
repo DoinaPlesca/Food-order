@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router } from '@angular/router';
 import {Subscription, firstValueFrom } from 'rxjs';
 import { environment } from 'src/app/environments/environment';
 import { Category } from 'src/app/models/category';
@@ -22,16 +22,19 @@ export class CreateNewProductComponent implements OnInit{
   categories: Category[] = [];
   selectedCategory: string = '';
   openModal: boolean = false;
+  isEditMode : boolean= false;
+  product: Product | undefined;
 
 
   productForm = this.fb.group({
     name: ['',[Validators.required, Validators.minLength(5)]],
     description:['' ,  Validators.required],
-    price: ['' , Validators.required],
-    quantity: ['' , Validators.required],
+    price: ['', Validators.required],
+    quantity: ['', Validators.required],
     imageUrl: ['', Validators.required],
-    categoryId: '',
-  })
+    categoryId: [''],
+  });
+
 
 
   constructor(
@@ -41,37 +44,90 @@ export class CreateNewProductComponent implements OnInit{
     private http: HttpClient,
     private state: State,
     private router: Router,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private route: ActivatedRoute
 
-
-
-
-  ) {
-    this.productForm = this.fb.group({
-      name :'',
-      description: '',
-      price: '',
-      quantity: '',
-      imageUrl: '' ,
-      categoryId: '',
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
     this.loadAllCategories();
     this.openModal= true;
-    this.categorySubscription = this.productForm.get('categoryId')?.valueChanges.subscribe((categoryId) => {
-      console.log('Selected Category ID:', categoryId);
-
+    this.sharedService.selectedItem$.subscribe((selectedItem) => {
+      if (selectedItem) {
+        this.isEditMode = true;
+        this.loadProductForEditing(selectedItem);
+      } else {
+        this.isEditMode = false;
+      }
+      this.openModal= true;
     });
   }
 
-  cancel() {
-    this.productForm.reset();
-    this.openModal = false;
-    this.router.navigate(['/main.html']);
+  async loadProductForEditing(selectedItem: Category | Product): Promise<void> {
+    try {
+      const productId = this.sharedService.isProduct(selectedItem) ? selectedItem.productId : selectedItem.categoryId;
+
+      if (productId !== undefined) {
+        const productData = await this.productService.getProductById(productId);
+
+        if (productData) {
+          this.productForm.patchValue({
+            name: productData.name,
+            description: productData.description,
+            price: productData.price?.toString() || null,
+            quantity: productData.quantity?.toString() || null,
+            imageUrl: productData.imageUrl,
+            categoryId: productData.categoryId?.toString() || null,
+          });
+        }
+      } else {
+        console.error('Item ID is undefined. Cannot load product data for editing.');
+      }
+    } catch (error) {
+      console.error('Failed to load product data for editing', error);
+
+      if (error instanceof HttpErrorResponse) {
+        this.errorService.handleHttpError(error);
+      } else {
+        console.error('An unexpected error occurred while loading product data', error);
+      }
+    }
   }
 
+ 
+ async saveProduct(): Promise<void> {
+     if (this.productForm.valid) {
+       try {
+         const categoryId = this.productForm.get('categoryId')?.value;
+
+         if (!categoryId) {
+           this.errorService.showProductValidationError('Please select a category.');
+           return;
+         }
+
+         const productData = { ...this.productForm.getRawValue(), categoryId };
+         console.log('Request Payload:', productData);
+
+         const savedProduct = await this.productService.saveProduct(productData);
+
+         if (savedProduct) {
+           const productWithCategory = {...savedProduct, category: {categoryId}};
+
+           this.state.products.push(productWithCategory);
+           this.errorService.showProductSuccess();
+           this.router.navigate(['/main.html'] );
+         }
+         else {
+           this.errorService.showProductError('Failed to get valid response data.');
+         }
+       } catch (e) {
+         this.errorService.showProductError('An error occurred while saving the product.');
+       }
+     } else {
+          this.errorService.showProductValidationError('Please provide all the required values!');
+     }
+
+   }
   async loadAllCategories(): Promise<void> {
     try {
       await this.sharedService.loadAllCategories();
@@ -80,55 +136,20 @@ export class CreateNewProductComponent implements OnInit{
       console.error('Failed to load all categories', error);
     }
   }
+
+  get errorControl() {
+    return this.productForm.controls;
+  }
+  cancel() {
+    this.productForm.reset();
+    this.openModal = false;
+    this.router.navigate(['/main.html']);
+  }
+
   ngOnDestroy(): void {
     if (this.categorySubscription) {
       this.categorySubscription.unsubscribe();
     }
-  }
-
-
-
-  async saveProduct(): Promise<void> {
-    console.log(this.productForm.valid);
-
-    if (this.productForm.valid) {
-      try {
-        const categoryId = this.productForm.get('categoryId')?.value;
-
-        if (!categoryId) {
-          this.errorService.showProductValidationError('Please select a category.');
-          return;
-        }
-
-        const productData = { ...this.productForm.getRawValue(), categoryId };
-        console.log('Request Payload:', productData);
-
-        const observable = this.http.post<ResponseDto<Product>>(
-          environment.BASE_URL + '/food/order/new/product',
-          productData
-        );
-        const response = await firstValueFrom(observable);
-        if (response && response.responseData) {
-          const productWithCategory = { ...response.responseData, category: { categoryId } };
-
-          this.state.products.push(productWithCategory);
-          this.errorService.showProductSuccess();
-          this.router.navigate(['/main.html']);
-
-        } else {
-          this.errorService.showProductError('Failed to get valid response data.');
-        }
-      } catch (error) {
-        this.errorService.showProductError('An error occurred while saving the product.');
-      }
-    } else {
-      this.errorService.showProductValidationError('Please provide all the required values!');
-    }
-  }
-
-
-  get errorControl() {
-    return this.productForm.controls;
   }
 }
 

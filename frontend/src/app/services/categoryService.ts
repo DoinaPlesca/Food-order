@@ -1,10 +1,11 @@
-﻿import { HttpClient } from "@angular/common/http";
+﻿import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import {State} from "./state";
 import {Category} from "../models/category";
 import {firstValueFrom} from "rxjs";
 import {ResponseDto} from "../models/responsiveHelper/responseDto";
 import {environment} from "../environments/environment";
+import { ErrorService } from "./errorService";
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ export class CategoryService {
   constructor(
     private state: State,
     private http: HttpClient,
+    private  errorService: ErrorService
 
   ) {}
 
@@ -32,7 +34,7 @@ export class CategoryService {
     }
   }
 
-  
+
   async deleteCategoryById(categoryId: number): Promise<void> {
     try {
       await this.http.delete<ResponseDto<Category>>(
@@ -50,6 +52,47 @@ export class CategoryService {
     }
   }
 
+  async saveCategory(categoryData: any): Promise<Category | null> {
+    try {
+      const observable = this.http.post<ResponseDto<Category>>(
+        environment.BASE_URL + '/food/order/category',
+        categoryData
+      );
+
+      const response = await firstValueFrom(observable);
+
+      return response?.responseData || null;
+    } catch (error) {
+      if (error instanceof HttpErrorResponse) {
+
+        this.errorService.handleHttpError(error);
+      } else {
+        console.error('An unexpected error occurred while saving category', error);
+      }
+      return null;
+    }
+  }
+
+  async getCategoryById(categoryId: number): Promise<Category> {
+    try {
+      const res: any = await firstValueFrom(
+        this.http.get<ResponseDto<Category[]>>(
+          `${environment.BASE_URL}/api${categoryId}`
+        )
+      );
+
+      this.state.currentCategory= res.responseData;
+      return res.responseData;
+
+    } catch (error) {
+      if (error instanceof HttpErrorResponse) {
+        this.errorService.handleHttpError(error);
+      } else {
+        console.error('An unexpected error occurred while fetching category', error);
+      }
+      throw error;
+    }
+  }
 
 
 

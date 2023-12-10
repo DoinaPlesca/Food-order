@@ -65,12 +65,12 @@ public class CategoryController : ControllerBase
     
     [HttpPut]
     [ValidateModel]
-    [Route("/food/order/category/{id}")]
-    public IActionResult UpdateCategoryById([FromRoute] int id, [FromBody] UpdateCategoryRequest request)
+    [Route("/food/order/category/{categoryId}")]
+    public IActionResult UpdateCategoryById([FromRoute] int categoryId, [FromBody] UpdateCategoryRequest request)
     {
         try
         {
-            var updatedCategory = _categoryService.UpdateCategory(id, request.Name, request.ImageUrl);
+            var updatedCategory = _categoryService.UpdateCategory(categoryId, request.CategoryName, request.CategoryImageUrl);
 
             if (updatedCategory != null)
             {
@@ -83,8 +83,8 @@ public class CategoryController : ControllerBase
             else
             {
                 return NotFound(_responseHelper.NotFound(
-                    $"Category with Id {id} not found",
-                    $"Category with Id {id} not found"
+                    $"Category with Id {categoryId} not found",
+                    $"Category with Id {categoryId} not found"
                 ));
             }
         }
@@ -124,6 +124,29 @@ public class CategoryController : ControllerBase
         }
     }
  
+    [HttpGet]
+    [Route("/api{categoryId}")]
+    public IActionResult GetCategoryById([FromRoute] int categoryId)
+    {
+        var category = _categoryService.GetCategoryById(categoryId);
+
+        if (category!= null)
+        {
+            return Ok(_responseHelper.Success(
+                StatusCodes.Status200OK,
+                $"Successfully fetched category with Id: {categoryId}",
+                category
+            ));
+        }
+        else
+        {
+            return NotFound(_responseHelper.NotFound(
+                $"Category with Id {categoryId} not found",
+                $"Category with Id {categoryId} not found"
+            ));
+        }
+    }
+
 
 
 

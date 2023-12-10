@@ -48,30 +48,26 @@ public class CategoryRepository
     }
 
 
-    
-    public Category UpdateCategory(int id, string name, string imageUrl)
-    {
-        var updatedCategory = new Category
+
+    public Category UpdateCategory(int categoryId, string categoryName, string categoryImageUrl)
+    { 
+        var sql = $@"
+            UPDATE food_order.""Category"" 
+            SET categoryName = @CategoryName,  categoryImageUrl= @CategoryImageUrl
+            WHERE categoryId = @CategoryId
+            RETURNING categoryId AS {nameof(Category.CategoryId)},
+            categoryName AS {nameof(Category.CategoryName)},
+            categoryImageUrl AS {nameof(Category.CategoryImageUrl)}
+            ";
+        using (var conn = _dataSource.OpenConnection())
         {
-            CategoryId = id,
-            CategoryName = name,
-            CategoryImageUrl = imageUrl
-        };
+            return conn.QueryFirst<Category>(sql, new { categoryId,categoryName, categoryImageUrl });
 
-        string sql = @"
-        UPDATE food_order.""Category""
-        SET
-            name = @CategoryName,
-            image_url = @CategoryImageUrl
-        WHERE
-            id = @CategoryId
-        RETURNING *";
-
-        using var conn = _dataSource.OpenConnection();
-        return conn.QuerySingle<Category>(sql, updatedCategory);
+        }
     }
-    
-    
+
+
+
     public bool DeleteCategory(int categoryId)
     {
         var sql = @"
@@ -86,6 +82,23 @@ public class CategoryRepository
         }
     }
 
+    public Category GetCategoryById(int categoryId)
+    {
+        string sql = @"
+        SELECT 
+            categoryid AS CategoryId,
+            categoryname AS CategoryName,
+            categoryimageurl AS CategoryImageUrl
+        FROM food_order.""Category"" 
+        WHERE categoryid = @CategoryId";
 
+        using var conn = _dataSource.OpenConnection();
+
+        return conn.QueryFirstOrDefault<Category>(sql, new { CategoryId = categoryId });
+    }
+
+        
+        
+    
 
 }

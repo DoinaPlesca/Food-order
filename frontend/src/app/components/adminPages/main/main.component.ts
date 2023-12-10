@@ -8,26 +8,24 @@ import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.s
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import { CreateNewProductComponent } from '../create-new-product/create-new-product.component';
 import { CreateCategoryComponent } from '../create-category/create-category.component';
-
-
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-main',
-  templateUrl: './main.component.html',
-
-})
+  templateUrl: './main.component.html',})
 
 export class MainComponent implements OnInit {
   categories: Category[] = [];
   products: Product[] = [];
   displayType: 'products' | 'categories' = 'categories';
+  productId: string | undefined;
 
   constructor(
     private sharedService: SharedProductCategoryService,
     private productService: ProductService,
     private categoryService: CategoryService,
     private cdRef: ChangeDetectorRef,
-    private dialog:MatDialog
+    private dialog:MatDialog,
+    private router :Router,
 
 
   ) {}
@@ -35,6 +33,7 @@ export class MainComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+
   }
 
   async loadData() {
@@ -109,33 +108,32 @@ export class MainComponent implements OnInit {
       console.error('Item ID is undefined. Cannot delete item.');
     }
   }
-
-
-
-
   onEditItemClick(item: Category | Product): void {
+    const itemId = this.sharedService.isProduct(item) ? item.productId : item.categoryId;
 
+    if (itemId !== undefined) {
+      const editQueryParam = { edit: 'true', itemId: itemId };
+      const route = this.displayType === 'products' ? '/create-new-product.html' : '/create-category.html';
+
+      this.sharedService.updateSelectedItem(item);
+      this.router.navigate([route], { queryParams: editQueryParam });
+    } else {
+      console.error('Item ID is undefined. Cannot edit item.');
+    }
   }
 
+
   openModal(): void {
-    const dialogRef = this.dialog.open(CreateNewProductComponent, {
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-
-    });
+    const dialogRef = this.dialog.open(CreateNewProductComponent, {});
+    dialogRef.afterClosed().subscribe(result => {});
   }
 
   openCategoryModal(): void {
-    const dialogRef = this.dialog.open(CreateCategoryComponent, {
-    });
+    const dialogRef = this.dialog.open(CreateCategoryComponent, {});
+    dialogRef.afterClosed().subscribe(result => {});
 
-    dialogRef.afterClosed().subscribe(result => {
 
-    });
-  
-    
-    
+
   }
 
 
