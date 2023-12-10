@@ -1,11 +1,13 @@
 ﻿
 import {State} from "./state";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Product} from "../models/product";
-import {firstValueFrom} from "rxjs";
+import {BehaviorSubject, firstValueFrom} from "rxjs";
 import {ResponseDto} from "../models/responsiveHelper/responseDto";
 import {environment} from "../environments/environment";
 import { Injectable } from "@angular/core";
+import { ErrorService } from "./errorService";
+import { ToastrService } from "ngx-toastr";
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +17,8 @@ export class ProductService {
   constructor(
     private state: State,
     private http: HttpClient,
+    private errorService: ErrorService,
+    private toastr: ToastrService
   ) {}
 
 
@@ -31,22 +35,6 @@ export class ProductService {
     }
   }
 
-  async getAllProductsForSelectedCategory(categoryId: number): Promise<Product[]> {
-    try {
-      const res: any = await firstValueFrom(
-        this.http.get<ResponseDto<Product[]>>(`${environment.BASE_URL}/food/order/category/${categoryId}/product`)
-      );
-
-      this.state.setProducts(res.responseData);
-
-      return res.responseData;
-    } catch (error) {
-      console.error('Failed to fetch products for the selected category. Please try again later.');
-      throw error;
-    }
-  }
-
-
   async deleteProductById(productId: number): Promise<void> {
     try {
       await this.http.delete<ResponseDto<Product>>(
@@ -61,6 +49,85 @@ export class ProductService {
       throw error;
     }
   }
-  
+
+  async saveProduct(productData: any): Promise<Product | null> {
+    try {
+      const observable = this.http.post<ResponseDto<Product>>(
+        environment.BASE_URL + '/food/order/new/product',
+        productData
+      );
+      const response = await firstValueFrom(observable);
+      return response?.responseData || null;
+
+    } catch (error) {
+      if (error instanceof HttpErrorResponse) {
+
+        this.errorService.handleHttpError(error);
+      } else {
+        console.error('An unexpected error occurred while saving category', error);
+      }
+      return null;
+    }
+  }
+
+  async getProductById(productId: number): Promise<Product> {
+    try {
+      const res: any = await firstValueFrom(
+        this.http.get<ResponseDto<Product[]>>(
+          `${environment.BASE_URL}/food/order/${productId}`
+        )
+      );
+
+      this.state.currentProduct = res.responseData;
+      return res.responseData;
+
+    } catch (error) {
+      if (error instanceof HttpErrorResponse) {
+        this.errorService.handleHttpError(error);
+      } else {
+        console.error('An unexpected error occurred while fetching product', error);
+      }
+      throw error;
+    }
+  }
+
+@Injectable({
+  providedIn: 'root',
+})
+async updateProductById(id: number, data: any) {
+  try {
+    const res: any = await firstValueFrom(
+      this.http.put<ResponseDto<Product>>(environment.BASE_URL + '/food/order/' + id, data)
+    );
+
+    this.state.currentProduct = res.responseData;
+
+    this.toastr.show('Success update', 'Success');
+
+    await this.getAllProducts();
+
+  } catch (error) {
+    if (error instanceof HttpErrorResponse) {
+      this.errorService.handleHttpError(error);
+    } else {
+      this.toastr.show('Error', 'Error');
+    }
+  }
+}
+
+async getAllProductsForSelectedCategory(categoryId: number): Promise<Product[]> {
+    try {
+      const res: any = await firstValueFrom(
+        this.http.get<ResponseDto<Product[]>>(`${environment.BASE_URL}/food/order/category/${categoryId}/product`)
+      );
+
+      this.state.setProducts(res.responseData);
+
+      return res.responseData;
+    } catch (error) {
+      console.error('Failed to fetch products for the selected category. Please try again later.');
+      throw error;
+    }
+  }
 
 }

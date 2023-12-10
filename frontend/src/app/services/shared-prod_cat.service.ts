@@ -1,5 +1,5 @@
 ﻿import {Injectable} from "@angular/core";
-import { Subject } from "rxjs";
+import {BehaviorSubject, Subject } from "rxjs";
 import { Product } from "../models/product";
 import { Category } from "../models/category";
 import { ProductService } from "./productService";
@@ -15,13 +15,25 @@ export class SharedProductCategoryService {
 
   private selectedCategoryId: number | null = null;
   private selectedCategoryIdSubject = new Subject<number | null>();
-  selectedCategoryId$ = this.selectedCategoryIdSubject.asObservable();
+
+  private selectedItemSubject = new BehaviorSubject<Category | Product | null>(null);
+  selectedItem$ = this.selectedItemSubject.asObservable();
 
   constructor(private productService: ProductService,
-              private categoryService: CategoryService,
+              private categoryService: CategoryService,) {}
 
 
-  ) {}
+  updateSelectedItem(item: Category | Product | null): void {
+    this.selectedItemSubject.next(item);
+  }
+
+  getCategoryId(selectedItem: Category | Product): number | undefined {
+    if (this.isProduct(selectedItem)) {
+      return (selectedItem as Product).productId;
+    } else {
+      return (selectedItem as Category).categoryId;
+    }
+  }
 
   async loadAllProducts(): Promise<void> {
     try {
@@ -99,8 +111,9 @@ export class SharedProductCategoryService {
     return url.endsWith('.jpg') || url.endsWith('.png');
   }
 
-  
-  
+
+
+
 
 
 

@@ -23,14 +23,19 @@ public class CategoryService
         return _categoryRepository.CreateCategory(name, imageUrl);
     }
 
-    public Category UpdateCategory(int id, string name, string imageUrl)
-    {
-        return _categoryRepository.UpdateCategory(id, name, imageUrl);
+    public Category UpdateCategory(int categoryId, string categoryName, string categoryImageUrl)
+    { 
+        return _categoryRepository.UpdateCategory(categoryId, categoryName, categoryImageUrl);
     }
     
     public bool DeleteCategory(int categoryId)
     {
         return _categoryRepository.DeleteCategory(categoryId);
+    }
+
+    public Category GetCategoryById(int categoryId)
+    {
+        return _categoryRepository.GetCategoryById(categoryId);
     }
 
 

@@ -25,7 +25,6 @@ export class ErrorService {
       }
     }
   }
-
   showCategorySuccess(): void {
     this.showSuccess('Category was successfully created');
   }
@@ -34,11 +33,11 @@ export class ErrorService {
     this.showError('Error performing category operation. Please try again.', 'Category Error', message);
   }
   showProductSuccess(): void {
-    this.showSuccess('Category was successfully created');
+    this.showSuccess('Product was successfully created');
   }
 
   showProductError(message: string): void {
-    this.showError('Error performing category operation. Please try again.', 'Category Error', message);
+    this.showError('Error performing product operation. Please try again.', 'Category Error', message);
   }
 
  showSuccess(message: string): void {

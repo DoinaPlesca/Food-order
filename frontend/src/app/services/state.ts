@@ -10,6 +10,8 @@ export class State {
 
   products: Product[] = [];
   categories : Category[] = [];
+  currentProduct: Product | null = null;
+  currentCategory:Category | null = null;
 
   private productsSubject = new BehaviorSubject<Product[]>([]);
   private categoriesSubject = new BehaviorSubject<Category[]>([]);
@@ -21,16 +23,12 @@ export class State {
     this.productsSubject.next(products);
   }
 
-  /*getProducts(): Product[] {
-    return this.productsSubject.value;
-  }*/
+ 
   setCategories(categories: Category[]): void {
     this.categoriesSubject.next(categories);
   }
 
-  /*getCategories(): Category [] {
-    return this.categoriesSubject.value;
-  }*/
+ 
   getProducts(): Product[] {
     return this.productsSubject.value || [];
   }

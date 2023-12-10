@@ -46,31 +46,18 @@ public class ProductRepository
             Description = description,
             Price = price,
             Quantity = quantity,
-            Image_url = imageUrl,
+            ImageUrl = imageUrl,
             CategoryId = categoryId
         };
 
         string sql = @"
         INSERT INTO food_order.""Product"" (name, description, price, quantity, image_url, category_id)
-        VALUES (@Name, @Description, @Price, @Quantity, @Image_url, @CategoryId)
-        RETURNING id AS ProductId,name,description,price,quantity, image_url, category_id As CategoryId";
+        VALUES (@Name, @Description, @Price, @Quantity, @ImageUrl, @CategoryId)
+        RETURNING id AS ProductId,name,description,price,quantity, image_url As ImageUrl, category_id As CategoryId";
 
         using var conn = _dataSource.OpenConnection();
         return conn.QuerySingle<Product>(sql, newProduct);
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
@@ -121,7 +108,7 @@ public class ProductRepository
                     description AS {nameof(Product.Description)},
                     price AS {nameof(Product.Price)},
                     quantity AS {nameof(Product.Quantity)},
-                    image_url AS {nameof(Product.Image_url)},
+                    image_url AS {nameof(Product.ImageUrl)},
                     category_id AS {nameof(Product.CategoryId)}";
 
             return conn.QueryFirst<Product>(sql, new

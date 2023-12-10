@@ -6,7 +6,9 @@ import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom } from 'rxjs';
 import { environment } from 'src/app/environments/environment';
 import { Category } from 'src/app/models/category';
+import { Product } from 'src/app/models/product';
 import { ResponseDto } from 'src/app/models/responsiveHelper/responseDto';
+import { CategoryService } from 'src/app/services/categoryService';
 import { ErrorService } from 'src/app/services/errorService';
 import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.service';
 import { State } from 'src/app/services/state';
@@ -20,6 +22,7 @@ export class CreateCategoryComponent implements OnInit{
   categories: Category[] = [];
   selectedCategory: string = '';
   openCategoryModal: boolean = false;
+  isEditMode: boolean = false;
 
 
   categoryForm = this.fb.group({
@@ -34,40 +37,69 @@ export class CreateCategoryComponent implements OnInit{
     private state: State,
     public router: Router,
     private toastr: ToastrService,
-    private errorService: ErrorService
-
-
+    private errorService: ErrorService,
+    private categoryService: CategoryService,
+    private sharedService: SharedProductCategoryService
 
   ) {
-    this.categoryForm = this.fb.group({
+    /*this.categoryForm = this.fb.group({
       categoryName :'',
       categoryImageUrl: '' ,
-    });
+    });*/
   }
 
   ngOnInit(): void {
-    this.openCategoryModal= true;
+    this.sharedService.selectedItem$.subscribe((selectedItem) => {
+      if (selectedItem) {
+        this.isEditMode = true;
+        this.loadCategoryForEditing(selectedItem);
+      } else {
+        this.isEditMode = false;
+      }
+      this.openCategoryModal = true;
+    });
   }
 
-  cancel() {
-    this.categoryForm.reset();
-    this.openCategoryModal = false;
-    this.router.navigate(['/main.html']);
+  async loadCategoryForEditing(selectedItem: Category | Product): Promise<void> {
+    try {
+      const categoryId = this.sharedService.isProduct(selectedItem) ? selectedItem.productId : selectedItem.categoryId;
+
+      if (categoryId !== undefined) {
+        const categoryData = await this.categoryService.getCategoryById(categoryId);
+
+        console.log(categoryData);
+        
+        if (categoryData) {
+          this.categoryForm.patchValue({
+            categoryName: categoryData.categoryName,
+            categoryImageUrl: categoryData.categoryImageUrl,
+          });
+        }
+      } else {
+        console.error('Category ID is undefined. Cannot load category data for editing.');
+      }
+    } catch (error) {
+      console.error('Failed to load category data for editing', error);
+
+      if (error instanceof HttpErrorResponse) {
+        this.errorService.handleHttpError(error);
+      } else {
+        console.error('An unexpected error occurred while loading category data', error);
+      }
+    }
   }
+
+
 
 
   async saveCategory(): Promise<void> {
     if (this.categoryForm.valid) {
       try {
-        const observable = this.http.post<ResponseDto<Category>>(
-          environment.BASE_URL + '/food/order/category',
-          this.categoryForm.getRawValue()
-        );
+        const categoryData = this.categoryForm.getRawValue();
+        const savedCategory = await this.categoryService.saveCategory(categoryData);
 
-        const response = await firstValueFrom(observable);
-
-        if (response && response.responseData) {
-          this.state.categories.push(response.responseData);
+        if (savedCategory) {
+          this.state.categories.push(savedCategory);
           this.errorService.showCategorySuccess();
           this.router.navigate(['/main.html']);
         }
@@ -81,6 +113,12 @@ export class CreateCategoryComponent implements OnInit{
     } else {
       this.errorService.showCategoryError('Please provide all the required values!');
     }
+  }
+
+  cancel() {
+    this.categoryForm.reset();
+    this.openCategoryModal = false;
+    this.router.navigate(['/main.html']);
   }
 
   get errorControl() {

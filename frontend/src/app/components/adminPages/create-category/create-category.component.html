@@ -18,16 +18,20 @@
   </header>
 </div>
 
-<!-- Add the form for creating a new product -->
+
 
 <ng-container *ngIf="openCategoryModal">
   <div class="modal-overlay" (click)="cancel()"></div>
   <div class="modal-container">
+
     <div class="modal-header">
       <button (click)="cancel()">Cancel</button>
-      <h2>Create category</h2>
-      <button (click)="saveCategory()">Save</button>
+      <h2>{{ isEditMode ? 'Edit Category' : 'Create Category' }}</h2>
+
+
+      <button (click)="saveCategory()">{{ isEditMode ? 'Update' : 'Save' }}</button>
     </div>
+
     <div class="modal-content">
       <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()" novalidate>
         <div class="form-group">

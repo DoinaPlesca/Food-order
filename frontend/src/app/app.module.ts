@@ -24,6 +24,7 @@ import { CreateCategoryComponent } from './components/adminPages/create-category
 import { ToastrModule } from 'ngx-toastr';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,7 +34,8 @@ import { ToastrModule } from 'ngx-toastr';
     ReservationComponent,
     MainComponent,
     CreateNewProductComponent,
-    CreateCategoryComponent
+    CreateCategoryComponent,
+
 
   ],
 
@@ -48,10 +50,6 @@ import { ToastrModule } from 'ngx-toastr';
     MatDialogActions,
     MatDialogModule,
     ToastrModule.forRoot(),
-
-
-
-
 
 
 

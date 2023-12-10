@@ -9,6 +9,7 @@ import { CreateNewProductComponent } from "./components/adminPages/create-new-pr
 import { CreateCategoryComponent } from "./components/adminPages/create-category/create-category.component";
 
 
+
 const routes: Routes = [
   {path: '', component : HomeComponent},
   {path: 'menu.html' , component: MenuComponent},
@@ -16,7 +17,8 @@ const routes: Routes = [
   {path: 'reservation.html' , component: ReservationComponent},
   {path: 'main.html', component: MainComponent},
   {path: 'create-new-product.html', component: CreateNewProductComponent},
-  {path: 'create-category.html' , component: CreateCategoryComponent}
+  {path: 'create-category.html' , component: CreateCategoryComponent},
+
 
 
 
