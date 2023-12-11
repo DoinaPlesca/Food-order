@@ -66,8 +66,7 @@ export class CreateCategoryComponent implements OnInit{
 
       if (categoryId !== undefined) {
         const categoryData = await this.categoryService.getCategoryById(categoryId);
-
-        console.log(categoryData);
+        
         
         if (categoryData) {
           this.categoryForm.patchValue({
