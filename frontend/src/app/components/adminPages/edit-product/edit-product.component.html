@@ -1,0 +1,61 @@
+<html lang="en">
+<body class="sub_page">
+
+<ng-container *ngIf="state.currentProduct as product">
+  <div class="modal-overlay" (click)="cancel()"></div>
+  <div class="modal-container">
+
+    <div class="modal-header">
+      <button (click)="cancel()">Cancel</button>
+      <h2>Update Product</h2>
+      <button (click)="updateProduct()">Confirm</button>
+
+    </div>
+
+    <div class="modal-content">
+      <form [formGroup]="productForm" (ngSubmit)="updateProduct()" >
+        <div class="form-group">
+          <label for="name">Product Name</label>
+          <input id="name" formControlName="name" type="text" aria-label="Name" />
+          <div *ngIf="!productForm.controls['name'].valid">
+            Product name must be 5 characters or more
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <input id="description" formControlName="description" type="text" aria-label="Description" />
+        </div>
+
+        <div class="form-group">
+          <label for="price">Price</label>
+          <input id="price" formControlName="price" type="text" aria-label="Price" />
+        </div>
+
+        <div class="form-group">
+          <label for="quantity">Quantity</label>
+          <input id="quantity" formControlName="quantity" type="text" aria-label="Quantity" />
+        </div>
+
+        <div class="form-group">
+          <label for="categoryId">Category</label>
+          <select id="categoryId" formControlName="categoryId">
+            <option *ngFor="let category of categories" [value]="category.categoryId">
+              {{ category.categoryName}}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="imageUrl">Image URL</label>
+          <input id="imageUrl" formControlName ="imageUrl"/>
+
+          <img *ngIf="productForm.get('imageUrl')!.value"
+               [src]="productForm.get('imageUrl')!.value" alt="Product Image">
+        </div>
+
+      </form>
+    </div>
+  </div>
+</ng-container>
+</body>
+</html>

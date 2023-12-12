@@ -19,7 +19,8 @@ export class ProductService {
     private http: HttpClient,
     private errorService: ErrorService,
     private toastr: ToastrService
-  ) {}
+  ) {
+  }
 
 
   async getAllProducts(): Promise<Product[]> {
@@ -40,7 +41,7 @@ export class ProductService {
       await this.http.delete<ResponseDto<Product>>(
         `${environment.BASE_URL}/food/order/${productId}`
       ).toPromise();
-      const updatedProducts = this.state.getProducts().filter(product => product.productId!== productId);
+      const updatedProducts = this.state.getProducts().filter(product => product.productId !== productId);
       this.state.setProducts(updatedProducts);
 
       console.log(`Item with id ${productId} deleted successfully.`);
@@ -73,13 +74,16 @@ export class ProductService {
   async getProductById(productId: number): Promise<Product> {
     try {
       const res: any = await firstValueFrom(
-        this.http.get<ResponseDto<Product[]>>(
+        this.http.get<ResponseDto<Product>>(
           `${environment.BASE_URL}/food/order/${productId}`
         )
       );
 
-      this.state.currentProduct = res.responseData;
-      return res.responseData;
+      const product: Product = res.responseData;
+
+      this.state.currentProduct = product;
+
+      return product;
 
     } catch (error) {
       if (error instanceof HttpErrorResponse) {
@@ -91,20 +95,16 @@ export class ProductService {
     }
   }
 
-@Injectable({
-  providedIn: 'root',
-})
-async updateProductById(id: number, data: any) {
+
+  async updateProductById(id: number, data: any) : Promise<void> {
   try {
     const res: any = await firstValueFrom(
-      this.http.put<ResponseDto<Product>>(environment.BASE_URL + '/food/order/' + id, data)
+      this.http.put<ResponseDto<Product>>(environment.BASE_URL + '/food/order/update/' + id, data)
     );
 
     this.state.currentProduct = res.responseData;
-
     this.toastr.show('Success update', 'Success');
-
-    await this.getAllProducts();
+     await this.getAllProducts();
 
   } catch (error) {
     if (error instanceof HttpErrorResponse) {
@@ -115,7 +115,7 @@ async updateProductById(id: number, data: any) {
   }
 }
 
-async getAllProductsForSelectedCategory(categoryId: number): Promise<Product[]> {
+  async getAllProductsForSelectedCategory(categoryId: number): Promise<Product[]> {
     try {
       const res: any = await firstValueFrom(
         this.http.get<ResponseDto<Product[]>>(`${environment.BASE_URL}/food/order/category/${categoryId}/product`)

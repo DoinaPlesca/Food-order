@@ -1,35 +1,14 @@
 <html lang="en">
 <body class="sub_page">
 
-<div class="hero_area">
-  <div class="bg-box">
-    <img src="/assets/images/hero-bg.jpg" alt="">
-  </div>
-
-  <!-- header section -->
-  <header class="header_section">
-    <div class="container">
-      <nav class="navbar navbar-expand-lg custom_nav-container">
-        <a class="navbar-brand" href="index.html">
-          <span>FlavorFrame</span>
-        </a>
-      </nav>
-    </div>
-  </header>
-</div>
-
-
-
 <ng-container *ngIf="openCategoryModal">
   <div class="modal-overlay" (click)="cancel()"></div>
   <div class="modal-container">
 
     <div class="modal-header">
       <button (click)="cancel()">Cancel</button>
-      <h2>{{ isEditMode ? 'Edit Category' : 'Create Category' }}</h2>
-
-
-      <button (click)="saveCategory()">{{ isEditMode ? 'Update' : 'Save' }}</button>
+      <h2> Create Category</h2>
+      <button (click)="saveCategory()">Save</button>
     </div>
 
     <div class="modal-content">

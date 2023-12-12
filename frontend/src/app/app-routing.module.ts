@@ -7,6 +7,8 @@ import {ReservationComponent} from "./components/userPages/reservation/reservati
 import { MainComponent } from "./components/adminPages/main/main.component";
 import { CreateNewProductComponent } from "./components/adminPages/create-new-product/create-new-product.component";
 import { CreateCategoryComponent } from "./components/adminPages/create-category/create-category.component";
+import { EditProductComponent } from "./components/adminPages/edit-product/edit-product.component";
+import { EditCategoryComponent } from "./components/adminPages/edit-category/edit-category.component";
 
 
 
@@ -18,10 +20,10 @@ const routes: Routes = [
   {path: 'main.html', component: MainComponent},
   {path: 'create-new-product.html', component: CreateNewProductComponent},
   {path: 'create-category.html' , component: CreateCategoryComponent},
+  {path: 'edit-product/:id', component: EditProductComponent},
+  {path: 'edit-category/:id', component: EditCategoryComponent},
 
-
-
-
+  
 ];
 
 @NgModule({

@@ -1,0 +1,40 @@
+<html lang="en">
+<body class="sub_page">
+
+<ng-container *ngIf=" state.currentCategory as category">
+  <div class="modal-overlay" (click)="cancel()"></div>
+  <div class="modal-container">
+
+    <div class="modal-header">
+      <button (click)="cancel()">Cancel</button>
+      <h2>Update Category</h2>
+      <button (click)="updateCategory()">Confirm</button>
+
+    </div>
+
+    <div class="modal-content">
+      <form [formGroup]="categoryForm" (ngSubmit)="updateCategory()" >
+        <div class="form-group">
+          <label for="categoryName"> Category Name</label>
+          <input id="categoryName"
+                 formControlName="categoryName" type="text" aria-label="categoryName" />
+          <div *ngIf="!categoryForm.controls['categoryName'].valid">
+            Category name must be 1 characters or more
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <label for="categoryImageUrl">Image URL</label>
+          <input id="categoryImageUrl" formControlName ="categoryImageUrl"/>
+
+          <img *ngIf="categoryForm.get('categoryImageUrl')!.value"
+               [src]="categoryForm.get('categoryImageUrl')!.value" alt="Category Image">
+        </div>
+
+      </form>
+    </div>
+  </div>
+</ng-container>
+</body>
+</html>

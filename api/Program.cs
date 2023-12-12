@@ -45,8 +45,13 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod()
                 .AllowAnyHeader());
 });
-
+ 
 var app = builder.Build();
+
+app.UseRouting();
+
+app.UseCors("AllowOrigin");
+
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
@@ -80,8 +85,9 @@ app.UseSpa(conf =>
     conf.Options.SourcePath = frontEndRelativePath;
 });
 
+app.UseMiddleware<GlobalExceptionHandler>();
 
 app.MapControllers();
-app.UseMiddleware<GlobalExceptionHandler>();
+
 
 app.Run();

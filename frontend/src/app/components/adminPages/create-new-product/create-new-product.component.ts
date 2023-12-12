@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, Validators } from '@angular/forms';
 import {ActivatedRoute, Router } from '@angular/router';
 import {Subscription, firstValueFrom } from 'rxjs';
@@ -17,18 +17,17 @@ import { State } from 'src/app/services/state';
   templateUrl: './create-new-product.component.html',
 
 })
-export class CreateNewProductComponent implements OnInit{
-  private categorySubscription: Subscription | undefined
+export class CreateNewProductComponent implements OnInit {
+  private selectedItemSubscription: Subscription = new Subscription();
   categories: Category[] = [];
   selectedCategory: string = '';
   openModal: boolean = false;
-  isEditMode : boolean= false;
   product: Product | undefined;
 
 
   productForm = this.fb.group({
-    name: ['',[Validators.required, Validators.minLength(5)]],
-    description:['' ,  Validators.required],
+    name: ['', [Validators.required, Validators.minLength(5)]],
+    description: ['', Validators.required],
     price: ['', Validators.required],
     quantity: ['', Validators.required],
     imageUrl: ['', Validators.required],
@@ -36,98 +35,55 @@ export class CreateNewProductComponent implements OnInit{
   });
 
 
-
   constructor(
     private sharedService: SharedProductCategoryService,
     private productService: ProductService,
     private fb: FormBuilder,
-    private http: HttpClient,
     private state: State,
     private router: Router,
     private errorService: ErrorService,
-    private route: ActivatedRoute
-
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.loadAllCategories();
-    this.openModal= true;
-    this.sharedService.selectedItem$.subscribe((selectedItem) => {
-      if (selectedItem) {
-        this.isEditMode = true;
-        this.loadProductForEditing(selectedItem);
-      } else {
-        this.isEditMode = false;
-      }
-      this.openModal= true;
-    });
+    this.openModal = true;
   }
 
-  async loadProductForEditing(selectedItem: Category | Product): Promise<void> {
-    try {
-      const productId = this.sharedService.isProduct(selectedItem) ? selectedItem.productId : selectedItem.categoryId;
 
-      if (productId !== undefined) {
-        const productData = await this.productService.getProductById(productId);
+  async saveProduct(): Promise<void> {
+    if (this.productForm.valid) {
+      try {
+        const categoryId = this.productForm.get('categoryId')?.value;
 
-        if (productData) {
-          this.productForm.patchValue({
-            name: productData.name,
-            description: productData.description,
-            price: productData.price?.toString() || null,
-            quantity: productData.quantity?.toString() || null,
-            imageUrl: productData.imageUrl,
-            categoryId: productData.categoryId?.toString() || null,
-          });
+        if (!categoryId) {
+          this.errorService.showProductValidationError('Please select a category.');
+          return;
         }
-      } else {
-        console.error('Item ID is undefined. Cannot load product data for editing.');
-      }
-    } catch (error) {
-      console.error('Failed to load product data for editing', error);
 
-      if (error instanceof HttpErrorResponse) {
-        this.errorService.handleHttpError(error);
-      } else {
-        console.error('An unexpected error occurred while loading product data', error);
+        const productData = {...this.productForm.getRawValue(), categoryId};
+        console.log('Request Payload:', productData);
+
+        const savedProduct = await this.productService.saveProduct(productData);
+
+        if (savedProduct) {
+          const productWithCategory = {...savedProduct, category: {categoryId}};
+
+          this.state.products.push(productWithCategory);
+          this.errorService.showProductSuccess();
+          this.router.navigate(['/main.html']);
+        } else {
+          this.errorService.showProductError('Failed to get valid response data.');
+        }
+      } catch (e) {
+        this.errorService.showProductError('An error occurred while saving the product.');
       }
+    } else {
+      this.errorService.showProductValidationError('Please provide all the required values!');
     }
+
   }
 
- 
- async saveProduct(): Promise<void> {
-     if (this.productForm.valid) {
-       try {
-         const categoryId = this.productForm.get('categoryId')?.value;
-
-         if (!categoryId) {
-           this.errorService.showProductValidationError('Please select a category.');
-           return;
-         }
-
-         const productData = { ...this.productForm.getRawValue(), categoryId };
-         console.log('Request Payload:', productData);
-
-         const savedProduct = await this.productService.saveProduct(productData);
-
-         if (savedProduct) {
-           const productWithCategory = {...savedProduct, category: {categoryId}};
-
-           this.state.products.push(productWithCategory);
-           this.errorService.showProductSuccess();
-           this.router.navigate(['/main.html'] );
-         }
-         else {
-           this.errorService.showProductError('Failed to get valid response data.');
-         }
-       } catch (e) {
-         this.errorService.showProductError('An error occurred while saving the product.');
-       }
-     } else {
-          this.errorService.showProductValidationError('Please provide all the required values!');
-     }
-
-   }
   async loadAllCategories(): Promise<void> {
     try {
       await this.sharedService.loadAllCategories();
@@ -140,17 +96,17 @@ export class CreateNewProductComponent implements OnInit{
   get errorControl() {
     return this.productForm.controls;
   }
+
   cancel() {
-    this.productForm.reset();
+    this.resetForm()
     this.openModal = false;
     this.router.navigate(['/main.html']);
   }
 
-  ngOnDestroy(): void {
-    if (this.categorySubscription) {
-      this.categorySubscription.unsubscribe();
-    }
+  resetForm(): void {
+    this.productForm.reset();
   }
+
 }
 
 

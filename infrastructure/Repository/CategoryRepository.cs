@@ -90,7 +90,7 @@ public class CategoryRepository
             categoryname AS CategoryName,
             categoryimageurl AS CategoryImageUrl
         FROM food_order.""Category"" 
-        WHERE categoryid = @CategoryId";
+        WHERE categoryId = @CategoryId";
 
         using var conn = _dataSource.OpenConnection();
 
