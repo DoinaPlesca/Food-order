@@ -192,18 +192,6 @@ public class ProductController : ControllerBase
             ));
         }
     }
-
-
-
-
-
-    
-    
-    
-    
-    
-    
-    
     
     
     [HttpPost]
