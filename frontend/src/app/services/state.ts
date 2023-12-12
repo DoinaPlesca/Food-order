@@ -23,12 +23,12 @@ export class State {
     this.productsSubject.next(products);
   }
 
- 
+
   setCategories(categories: Category[]): void {
     this.categoriesSubject.next(categories);
   }
 
- 
+
   getProducts(): Product[] {
     return this.productsSubject.value || [];
   }

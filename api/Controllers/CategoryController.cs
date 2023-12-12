@@ -65,36 +65,16 @@ public class CategoryController : ControllerBase
     
     [HttpPut]
     [ValidateModel]
-    [Route("/food/order/category/{categoryId}")]
-    public IActionResult UpdateCategoryById([FromRoute] int categoryId, [FromBody] UpdateCategoryRequest request)
+    [Route("/category/{categoryId}")]
+    public ResponseDto UpdateCategoryById([FromRoute] int categoryId, 
+        [FromBody] UpdateCategoryRequest dto)
     {
-        try
+        HttpContext.Response.StatusCode = 201;
+        return new ResponseDto()
         {
-            var updatedCategory = _categoryService.UpdateCategory(categoryId, request.CategoryName, request.CategoryImageUrl);
-
-            if (updatedCategory != null)
-            {
-                return Ok(_responseHelper.Success(
-                    StatusCodes.Status200OK,
-                    "Category updated successfully",
-                    updatedCategory
-                ));
-            }
-            else
-            {
-                return NotFound(_responseHelper.NotFound(
-                    $"Category with Id {categoryId} not found",
-                    $"Category with Id {categoryId} not found"
-                ));
-            }
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, _responseHelper.InternalServerError(
-                "Failed to update the category",
-                ex.Message
-            ));
-        }
+            MessageToClient = "Successfully updated",
+            ResponseData = _categoryService.UpdateCategory(categoryId, dto.CategoryName,dto.CategoryImageUrl)
+        };
     }
     
     
@@ -125,7 +105,7 @@ public class CategoryController : ControllerBase
     }
  
     [HttpGet]
-    [Route("/api{categoryId}")]
+    [Route("/food/order/id/{categoryId}")]
     public IActionResult GetCategoryById([FromRoute] int categoryId)
     {
         var category = _categoryService.GetCategoryById(categoryId);

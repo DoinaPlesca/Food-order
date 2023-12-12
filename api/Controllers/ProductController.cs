@@ -3,6 +3,7 @@ using api.Helper;
 using api.TransferModel;
 using infrastructure.QueryModels;
 using infrastructure.Repository;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 using service;
@@ -93,40 +94,24 @@ public class ProductController : ControllerBase
     }
 
 
-
+    
     [HttpPut]
     [ValidateModel]
-    [Route("/food/order/{id}")]
+    [Route("/food/order/update/{id}")]
     
-    public IActionResult UpdateProductById([FromRoute] int id,
+    public ResponseDto UpdateProductById([FromRoute] int id,
         [FromBody] UpdateProductRequest dto)
+    
     {
-        try
+        HttpContext.Response.StatusCode = 201;
+        return new ResponseDto()
         {
-            var updatedProduct = _productService.UpdateProduct(
-                id,
-                dto.Name,
-                dto.Description,
-                dto.Price,
-                dto.Quantity,
-                dto.ImageUrl,
-                dto.CategoryId
-            );
-
-            return Ok(_responseHelper.Success(
-                StatusCodes.Status200OK,
-                "Successfully updated",
-                updatedProduct
-            ));
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, _responseHelper.InternalServerError(
-                "Failed to update the product",
-                ex.Message
-            ));
-        }
-    }
+            MessageToClient = "Successfully updated",
+            ResponseData = _productService.UpdateProduct(id, dto.Name, dto.Description, dto.Price,dto.Quantity,
+                    dto.ImageUrl, dto.CategoryId)
+        };
+    }  
+    
     
     
     [HttpGet]

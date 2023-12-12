@@ -4,50 +4,36 @@ import { Product } from "../models/product";
 import { Category } from "../models/category";
 import { ProductService } from "./productService";
 import { CategoryService } from "./categoryService";
-
-
 @Injectable({
   providedIn: 'root',
 })
 export class SharedProductCategoryService {
   private products: Product[] = [];
   private categories: Category[] = [];
+  constructor(
+    private productService: ProductService,
+    private categoryService: CategoryService,
+  ) {}
 
   private selectedCategoryId: number | null = null;
   private selectedCategoryIdSubject = new Subject<number | null>();
 
   private selectedItemSubject = new BehaviorSubject<Category | Product | null>(null);
   selectedItem$ = this.selectedItemSubject.asObservable();
-
-  constructor(private productService: ProductService,
-              private categoryService: CategoryService,) {}
-
-
   updateSelectedItem(item: Category | Product | null): void {
     this.selectedItemSubject.next(item);
-  }
+  } /*main component*/
 
-  getCategoryId(selectedItem: Category | Product): number | undefined {
-    if (this.isProduct(selectedItem)) {
-      return (selectedItem as Product).productId;
-    } else {
-      return (selectedItem as Category).categoryId;
-    }
-  }
+
 
   async loadAllProducts(): Promise<void> {
     try {
       this.products = await this.productService.getAllProducts();
     } catch (error) {
       console.error('Failed to load products:', error);
-      throw  error;
+      throw error;
     }
   }
-
-  getProducts(): Product[] {
-    return this.products;
-  }
-
   async loadAllCategories(): Promise<void> {
     try {
       this.categories = await this.categoryService.getAllCategories();
@@ -57,15 +43,48 @@ export class SharedProductCategoryService {
     }
   }
 
+  getProducts(): Product[] {
+    return this.products;
+  }
   getCategories(): Category[] {
     return this.categories || [];
   }
 
-  selectCategory(categoryId: number) {
+
+  selectCategory(categoryId: number): void {
     this.selectedCategoryId = categoryId;
     this.selectedCategoryIdSubject.next(categoryId);
+  } /*menu component*/
+
+  async deleteCategory(categoryId: number): Promise<void> {
+    await this.categoryService.deleteCategoryById(categoryId);
   }
 
+  async deleteProduct(id: number): Promise<void> {
+    await this.productService.deleteProductById(id);
+  }
+
+  isProduct(item: Category | Product): item is Product {
+    const product = item as Product;
+    return !!product?.name && !!product?.description && !!product?.price && !!product?.quantity;
+  }
+
+  isCategory(item: Category | Product): item is Category {
+    const category = item as Category;
+    return !!category.categoryName && !!category?.categoryImageUrl;
+  }
+
+  getProductSpecificProperty(product: Product): string {
+    return `${product.name} - ${product.description} - ${product.price} - ${product.quantity}`;
+  }
+
+  getCategorySpecificProperty(category: Category): string {
+    return `${category.categoryName} - ${category.categoryImageUrl}`;
+  }
+
+  isImageUrl(url: string): boolean {
+    return url.endsWith('.jpg') || url.endsWith('.png');
+  }
   async getAllProductsForSelectedCategory(categoryId: number): Promise<Product[]> {
     try {
       if (this.selectedCategoryId === null) {
@@ -81,43 +100,5 @@ export class SharedProductCategoryService {
       throw error;
     }
   }
-
-  async deleteCategory(categoryId: number): Promise<void> {
-    await this.categoryService.deleteCategoryById(categoryId);
-  }
-
-   async deleteProduct(id: number): Promise<void> {
-    await this.productService.deleteProductById(id);
-  }
-  isProduct(item: Category | Product): item is Product {
-    const product = item as Product;
-    return product?.name !== undefined && product?.description !== undefined &&
-      product?.price !== undefined && product?.quantity !== undefined;
-  }
-
-  isCategory(item: Category | Product): item is Category {
-    const category = item as Category;
-    return category.categoryName !== undefined && category?.categoryImageUrl !== undefined;
-  }
-  getProductSpecificProperty(product: Product): string {
-    return `${product.name} - ${product.description}
-    - ${product.price}- ${product.quantity}`;
-  }
-
-  getCategorySpecificProperty(category: Category): string {
-    return `${category.categoryName} - ${category.categoryImageUrl}`;
-  }
-  isImageUrl(url: string): boolean {
-    return url.endsWith('.jpg') || url.endsWith('.png');
-  }
-
-
-
-
-
-
-
-
-
 
 }

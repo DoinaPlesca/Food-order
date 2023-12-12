@@ -22,7 +22,9 @@ import {MatSelect, MatSelectModule} from "@angular/material/select";
 import { CreateNewProductComponent } from './components/adminPages/create-new-product/create-new-product.component';
 import { CreateCategoryComponent } from './components/adminPages/create-category/create-category.component';
 import { ToastrModule } from 'ngx-toastr';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EditCategoryComponent } from './components/adminPages/edit-category/edit-category.component';
+import { EditProductComponent } from './components/adminPages/edit-product/edit-product.component';
 
 
 @NgModule({
@@ -35,11 +37,14 @@ import { ToastrModule } from 'ngx-toastr';
     MainComponent,
     CreateNewProductComponent,
     CreateCategoryComponent,
+    EditCategoryComponent,
+    EditProductComponent
 
 
   ],
 
   imports: [
+    BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
@@ -50,6 +55,8 @@ import { ToastrModule } from 'ngx-toastr';
     MatDialogActions,
     MatDialogModule,
     ToastrModule.forRoot(),
+
+
 
 
 

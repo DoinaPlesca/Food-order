@@ -139,10 +139,12 @@ a:focus {
 }
 
 .header_section {
+  background-color: black;
   padding: 15px 0;
 }
 
 .header_section .container-fluid {
+  background-color: black;
   padding-right: 25px;
   padding-left: 25px;
 }

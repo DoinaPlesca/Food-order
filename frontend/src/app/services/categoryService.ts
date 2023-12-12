@@ -6,6 +6,7 @@ import {firstValueFrom} from "rxjs";
 import {ResponseDto} from "../models/responsiveHelper/responseDto";
 import {environment} from "../environments/environment";
 import { ErrorService } from "./errorService";
+import {ToastrService} from "ngx-toastr";
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,8 @@ export class CategoryService {
   constructor(
     private state: State,
     private http: HttpClient,
-    private  errorService: ErrorService
+    private  errorService: ErrorService,
+    private toastr: ToastrService
 
   ) {}
 
@@ -76,13 +78,15 @@ export class CategoryService {
   async getCategoryById(categoryId: number): Promise<Category> {
     try {
       const res: any = await firstValueFrom(
-        this.http.get<ResponseDto<Category[]>>(
-          `${environment.BASE_URL}/api${categoryId}`
+        this.http.get<ResponseDto<Category>>(
+          `${environment.BASE_URL}/food/order/id/${categoryId}`
         )
       );
+      const  category : Category = res.responseData;
 
-      this.state.currentCategory= res.responseData;
-      return res.responseData;
+      this.state.currentCategory = category;
+
+      return category;
 
     } catch (error) {
       if (error instanceof HttpErrorResponse) {
@@ -93,7 +97,25 @@ export class CategoryService {
       throw error;
     }
   }
+  async updateCategoryById(categoryId: number, data: any) : Promise<void> {
+    try {
+      const res: any = await firstValueFrom(
+        this.http.put<ResponseDto<Category>>(
+          environment.BASE_URL + '/category/' + categoryId, data)
+      );
 
+      this.state.currentCategory = res.responseData;
+      this.toastr.show('Success update', 'Success');
+      await this.getAllCategories();
+
+    } catch (error) {
+      if (error instanceof HttpErrorResponse) {
+        this.errorService.handleHttpError(error);
+      } else {
+        this.toastr.show('Error', 'Error');
+      }
+    }
+  }
 
 
 

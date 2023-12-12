@@ -9,9 +9,26 @@ import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import { CreateNewProductComponent } from '../create-new-product/create-new-product.component';
 import { CreateCategoryComponent } from '../create-category/create-category.component';
 import { Router } from '@angular/router';
+import {animate, state, style, transition, trigger } from '@angular/animations';
+import { EditProductComponent } from '../edit-product/edit-product.component';
+import { EditCategoryComponent } from '../edit-category/edit-category.component';
 @Component({
   selector: 'app-main',
-  templateUrl: './main.component.html',})
+  templateUrl: './main.component.html',
+
+ /* animations: [
+  trigger('flyInOut', [
+    state('in', style({ transform: 'translateX(0)' })),
+    transition('void => *', [
+      style({ transform: 'translateX(-100%)' }),
+      animate(100)
+    ]),
+    transition('* => void', [
+      animate(300, style({ transform: 'translateX(100%)' }))
+    ])
+  ])
+]*/
+})
 
 export class MainComponent implements OnInit {
   categories: Category[] = [];
@@ -77,8 +94,10 @@ export class MainComponent implements OnInit {
 
   switchDisplay(type: 'products' | 'categories') {
     this.displayType = type;
+    this.sharedService.updateSelectedItem(null);
     this.loadData();
   }
+
 
   onDeleteItemClick(item: Category | Product): void {
     const itemId = this.sharedService.isProduct(item) ? item.productId : item.categoryId;
@@ -108,21 +127,24 @@ export class MainComponent implements OnInit {
       console.error('Item ID is undefined. Cannot delete item.');
     }
   }
+
   onEditItemClick(item: Category | Product): void {
     const itemId = this.sharedService.isProduct(item) ? item.productId : item.categoryId;
 
     if (itemId !== undefined) {
-      const editQueryParam = { edit: 'true', itemId: itemId };
-      const route = this.displayType === 'products' ? '/create-new-product.html' : '/create-category.html';
-
-      this.sharedService.updateSelectedItem(item);
-      this.router.navigate([route], { queryParams: editQueryParam });
+      if (this.sharedService.isProduct(item)) {
+        this.router.navigate(['/edit-product', itemId]);
+      } else if (this.sharedService.isCategory(item)) {
+        this.router.navigate(['/edit-category', itemId]);
+      } else {
+        console.error('Unsupported item type. Cannot edit item.');
+      }
     } else {
       console.error('Item ID is undefined. Cannot edit item.');
     }
   }
 
-
+  
   openModal(): void {
     const dialogRef = this.dialog.open(CreateNewProductComponent, {});
     dialogRef.afterClosed().subscribe(result => {});
@@ -131,12 +153,7 @@ export class MainComponent implements OnInit {
   openCategoryModal(): void {
     const dialogRef = this.dialog.open(CreateCategoryComponent, {});
     dialogRef.afterClosed().subscribe(result => {});
-
-
-
   }
-
-
 
 }
 
