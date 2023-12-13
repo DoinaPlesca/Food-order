@@ -28,6 +28,12 @@ builder.Services.AddSingleton<ProductRepository>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<ResponseHelper>();
 
+builder.Services.AddSingleton<UserRepository>();
+builder.Services.AddSingleton<UserService>();
+builder.Services.AddSingleton<PasswordHasher ,BCryptHashAlgorithm>();
+
+
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

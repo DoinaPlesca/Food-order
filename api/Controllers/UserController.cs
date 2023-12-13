@@ -1,6 +1,10 @@
 ﻿using api.Filter;
 using api.Helper;
 using api.TransferModel;
+using api.TransferModel.LoginModel;
+using BCrypt.Net;
+using infrastructure.DataModels;
+using infrastructure.Repository;
 using Microsoft.AspNetCore.Mvc;
 using service;
 
@@ -11,15 +15,23 @@ public class UserController : ControllerBase
     private readonly ILogger<ProductController> _logger;
     private readonly UserService _userService;
     private readonly ResponseHelper _responseHelper;
+    private readonly PasswordHasher _passwordHasher;
+   
 
-    public UserController(ILogger<ProductController> logger,
+    public UserController(
+        ILogger<ProductController> logger,
         UserService userService,
-        ResponseHelper responseHelper)
+        ResponseHelper responseHelper,
+        PasswordHasher passwordHasher)
     {
         _logger = logger;
-        _userService= userService;
+        _userService = userService;
         _responseHelper = responseHelper;
+        _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
+       
     }
+    
+
     
     [HttpGet]
     [Route("/api/all/users")]
@@ -27,42 +39,63 @@ public class UserController : ControllerBase
     {
         return Ok(_responseHelper.Success(
             StatusCodes.Status200OK,
-            "Products fetched successfully",
+            "Users fetched successfully",
             _userService.GetAllUsers())
         );
     }
     
-    /*[HttpPost]
+
+    [HttpPost]
     [ValidateModel]
-    [Route("/api/new/user")]
-    public IActionResult CreateProduct([FromBody] CreateProductRequest dto)
+    [Route("api/register/user")]
+    public IActionResult RegisterUser([FromBody] RegistrationRequest request)
     {
         try
         {
-            var newProduct = _productService.CreateProduct(
-                dto.Name,
-                dto.Description,
-                dto.Price,
-                dto.Quantity,
-                dto.ImageUrl,
-                dto.CategoryId
-            );
-
-            return Ok(_responseHelper.Success(
-                StatusCodes.Status201Created,
-                "Successfully created a new product",
-                newProduct
-            ));
+            var newUser = _userService.RegisterUser(request.username, request.email, request.password, request.role);
+            
+            var userResponse = new UserResponseDto
+            {
+                username = newUser.username,
+                email = newUser.email,
+                password = newUser.password,
+                role = newUser.role
+           
+            };
+            
+            return Ok(userResponse);
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, _responseHelper.InternalServerError(
-                "Failed to create a new product",
-                ex.Message
-            ));
+            return StatusCode(StatusCodes.Status500InternalServerError, "Failed to register a new user");
         }
     }
-    */
+
+    [HttpPost]
+    [Route("/api/login")]
+    public IActionResult Login([FromBody] AuthenticationRequest dto)
+    {
+        try
+        {
+            var usernameOrEmail = dto.UsernameOrEmail;
+            var password = dto.Password;
+
+            if (!_userService.VerifyPassword(usernameOrEmail, password))
+            {
+               
+                return StatusCode(StatusCodes.Status401Unauthorized,
+                    _responseHelper.InternalServerError("Invalid username/email or password",errorMessage: "fail"));
+            }
+            
+
+            return Ok(_responseHelper.Success(StatusCodes.Status200OK, "Login successful"));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, _responseHelper.InternalServerError("Failed to perform login", ex.Message));
+        }
+    }
+
 
 
 
