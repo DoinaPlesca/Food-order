@@ -1,23 +1,25 @@
-﻿using infrastructure.DataModels;
+﻿using BCrypt.Net;
+using infrastructure.DataModels;
 using infrastructure.QueryModels;
 using infrastructure.Repository;
+using Microsoft.Extensions.Logging;
 
 namespace service;
 
 public class UserService
 {
     private readonly UserRepository _userRepository;
+    private readonly ILogger<UserService> _logger;
     private readonly PasswordHasher _passwordHasher;
 
-    public UserService(UserRepository userRepository, PasswordHasher passwordHasher)
-    {
-        _userRepository = userRepository;
-        _passwordHasher = passwordHasher;
-    }
 
-    public User GetUserByEmail(string email)
+    public UserService(UserRepository userRepository, ILogger<UserService> logger,
+        PasswordHasher passwordHasher)
     {
-        return _userRepository.GetUserByEmail(email);
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _userRepository = userRepository;
+        _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
+
     }
 
     public IEnumerable<UserFeedQuery> GetAllUsers()
@@ -25,23 +27,53 @@ public class UserService
         return _userRepository.GetAllUsers();
     }
 
-    public User CreateUser(string username, string email, string password, string role)
+
+    public User RegisterUser(string username, string email, string password, string role)
     {
-        var hashedPassword = PasswordHasher.HashPassword(password);
-        return _userRepository.CreateUser(username, email, hashedPassword, role);
+        try
+        {
+            var salt = _passwordHasher.GenerateSalt();
+            var hashedPassword = _passwordHasher.HashPassword(password, salt);
+            var algorithm = _passwordHasher.GetName();
+            var newUser = _userRepository.CreateUser(username, email, hashedPassword, salt, algorithm, role);
+
+            return newUser;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Exception: {ex.Message}");
+            Console.WriteLine($"StackTrace: {ex.StackTrace}");
+            throw;
+        }
     }
 
-    public bool AuthenticateUser(string email, string enteredPassword)
+
+    public bool VerifyPassword(string usernameOrEmail, string password)
     {
-        var user = _userRepository.GetUserByEmail(email);
-        if (user != null)
+        try
         {
-            var passwordMatch = PasswordHasher.VerifyPassword(user.password, enteredPassword);
+            var user = _userRepository.GetUserByUsernameOrEmail(usernameOrEmail);
 
-            return passwordMatch;
+            if (user == null)
+            {
+                Console.WriteLine($"User: {user}");
+                return false;
+            }
+
+            bool isPasswordValid = _passwordHasher.VerifyHashedPassword(password, user.password, user.salt);
+            Console.WriteLine($"Password validation result: {isPasswordValid}");
+
+            if (!isPasswordValid)
+            {
+                Console.WriteLine($"Invalid password for user with username or email: {usernameOrEmail}");
+            }
+
+            return isPasswordValid;
         }
-
-
-        return false;
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error verifying password for username or email: {usernameOrEmail}. Exception: {ex}");
+            throw;
+        }
     }
 }

@@ -1,59 +1,89 @@
 ﻿using Dapper;
 using infrastructure.DataModels;
 using infrastructure.QueryModels;
+using Microsoft.Extensions.Logging;
 using Npgsql;
-
-
 namespace infrastructure.Repository;
 
 public class UserRepository
 {
     private readonly NpgsqlDataSource _dataSource;
+    private readonly ILogger<UserRepository> _logger;
+  
 
-    public UserRepository(NpgsqlDataSource dataSource)
+    public UserRepository(NpgsqlDataSource dataSource,
+        ILogger<UserRepository> logger)
     {
         _dataSource = dataSource;
+        _logger = logger;
+        
     }
-
-
-    public User GetUserByEmail(string email)
+    public User CreateUser(string username, string email, string hashedPassword, string salt, string algorithm, string role)
     {
-        string sql = @"
-        SELECT * FROM ""User"" WHERE email = @Email";
+        try
+        {
+            var newUser = new User
+            {
+                username = username,
+                email = email,
+                password = hashedPassword,
+                salt = salt,
+                algorithm = algorithm,
+                role = role
+            };
 
-        using var conn = _dataSource.OpenConnection();
-        return conn.QueryFirstOrDefault<User>(sql, new { Email = email });
+            string sql = @"
+            INSERT INTO food_order.""User"" (username,email,password,salt,algorithm,role)
+            VALUES (@username , @email, @password, @salt, @algorithm, @role)
+            RETURNING id,username,email,password,salt,algorithm, role";
+
+            using var conn = _dataSource.OpenConnection();
+            var createdUser = conn.QuerySingle<User>(sql, newUser);
+
+            _logger.LogInformation("User created successfully. ID: {UserId}", createdUser.id);
+            return createdUser;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while creating a new user");
+            
+            throw;
+        }
     }
+
+
+    public User GetUserByUsernameOrEmail(string usernameOrEmail)
+    {
+        string sql = @"SELECT id, username, email, password, salt, algorithm, role 
+FROM food_order.""User"" WHERE username = @UsernameOrEmail OR email = @UsernameOrEmail";
+       
+        Console.WriteLine($"Executing SQL query: {sql}");
+        using var conn = _dataSource.OpenConnection();
+        return conn.QuerySingleOrDefault<User>(sql, new { UsernameOrEmail = usernameOrEmail });
+    }
+
 
     public IEnumerable<UserFeedQuery> GetAllUsers()
     {
         string sql = $@"
-        SELECT * FROM ""User""
+        SELECT * FROM food_order.""User""
         ";
         using var conn = _dataSource.OpenConnection();
         return conn.Query<UserFeedQuery>(sql);
     }
     
-
-    public User CreateUser(string username, string email, string password, string role)
+    public IEnumerable<User> GetUsersByRole(string role)
     {
-        var hashedPassword = PasswordHasher.HashPassword(password);
-        var newUser = new User
-        {
-            username = username,   
-            email = email,
-            password = hashedPassword,
-            role = role
-        };
-
-        string sql = @"
-        INSERT INTO ""User"" (username, email, password, role) 
-        VALUES (@Username, @Email, @Password, @Role) 
-        RETURNING id, username, email,hashedPassword,role"; 
-
+        string sql = "SELECT id, username, email, password, salt, algorithm, role " +
+                     "FROM \"User\" WHERE role = @Role";
+    
         using var conn = _dataSource.OpenConnection();
-        return conn.QuerySingle<User>(sql, newUser);
+        return conn.Query<User>(sql, new { Role = role });
     }
+
+    
+  
+   
 
    
   

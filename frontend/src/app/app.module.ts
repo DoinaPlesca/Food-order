@@ -25,7 +25,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditCategoryComponent } from './components/adminPages/edit-category/edit-category.component';
 import { EditProductComponent } from './components/adminPages/edit-product/edit-product.component';
-
+import {LoginComponent} from "./components/loginPage/login/login.component";
 
 @NgModule({
   declarations: [
@@ -38,7 +38,9 @@ import { EditProductComponent } from './components/adminPages/edit-product/edit-
     CreateNewProductComponent,
     CreateCategoryComponent,
     EditCategoryComponent,
-    EditProductComponent
+    EditProductComponent,
+    LoginComponent,
+
 
 
   ],

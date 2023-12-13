@@ -9,11 +9,12 @@ import { CreateNewProductComponent } from "./components/adminPages/create-new-pr
 import { CreateCategoryComponent } from "./components/adminPages/create-category/create-category.component";
 import { EditProductComponent } from "./components/adminPages/edit-product/edit-product.component";
 import { EditCategoryComponent } from "./components/adminPages/edit-category/edit-category.component";
-
+import {LoginComponent} from "./components/loginPage/login/login.component";
 
 
 const routes: Routes = [
-  {path: '', component : HomeComponent},
+  {path: '', component : LoginComponent},
+  {path: 'home.html', component : HomeComponent},
   {path: 'menu.html' , component: MenuComponent},
   {path: 'about.html' , component: AboutComponent},
   {path: 'reservation.html' , component: ReservationComponent},
@@ -23,7 +24,7 @@ const routes: Routes = [
   {path: 'edit-product/:id', component: EditProductComponent},
   {path: 'edit-category/:id', component: EditCategoryComponent},
 
-  
+
 ];
 
 @NgModule({
