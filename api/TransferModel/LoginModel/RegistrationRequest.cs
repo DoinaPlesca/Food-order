@@ -20,8 +20,6 @@ public class RegistrationRequest
     [StringLength(255, MinimumLength = 5)]
     public string password { get; set; }
     
-   
-   
 
     [NotNull]
     [Required]

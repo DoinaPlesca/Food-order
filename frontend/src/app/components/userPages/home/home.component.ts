@@ -12,8 +12,8 @@ import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.s
 
 })
 export class HomeComponent implements OnInit {
-  @ViewChild('sharedContent', { static: true }) sharedContent!: ElementRef;
-  @ViewChild('sharedFooter', { static: true }) sharedFooter!: ElementRef;
+  @ViewChild('sharedContent', {static: true}) sharedContent!: ElementRef;
+  @ViewChild('sharedFooter', {static: true}) sharedFooter!: ElementRef;
   products: Product[] = [];
   categories: Category[] = [];
 
@@ -21,13 +21,15 @@ export class HomeComponent implements OnInit {
     private sharedProductService: SharedProductCategoryService,
     private sharedContentService: SharedContentService,
     private sharedFooterService: SharedFooterService,
-    ) {}
+  ) {
+  }
 
-  async ngOnInit(){
+  async ngOnInit() {
     this.sharedContent.nativeElement.innerHTML = this.sharedContentService.getSharedContent();
     this.sharedFooter.nativeElement.innerHTML = this.sharedFooterService.getFooterContent();
     this.loadAllProducts();
-    await this.loadAllCategories();
+    this.loadAllCategories();
+
   }
 
   async loadAllProducts(): Promise<void> {
@@ -38,6 +40,7 @@ export class HomeComponent implements OnInit {
       //this.toastr.error('Failed to load all products', 'Error');
     }
   }
+
   async loadAllCategories() {
     try {
       await this.sharedProductService.loadAllCategories();
@@ -46,6 +49,5 @@ export class HomeComponent implements OnInit {
       // this.error('Failed to load all categories','Error');
     }
   }
+
 }
-
-

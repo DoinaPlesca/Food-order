@@ -4,21 +4,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login </title>
+  <title>Login</title>
 </head>
-<body>
-<form id="loginForm" action="login" method="post">
-  <h2>Login</h2>
-  <label for="loginUsername">Username:</label>
-  <input type="text" id="loginUsername" name="loginUsername" required>
 
-  <label for="loginPassword">Password:</label>
-  <input type="password" id="loginPassword" name="loginPassword" required>
+<body class="modal-content">
+<ng-container *ngIf="openLoginModal">
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
+    <h2>Login</h2>
+    <label for="usernameOrEmail">Username or Email:</label>
+    <input formControlName="usernameOrEmail"
+           type="text"
+           id="usernameOrEmail"
+           name="usernameOrEmail" required>
 
-  <button type="submit">Login</button>
-  <button type="submit" class="register">Register</button>
+    <label for="password">Password </label>
+    <input formControlName="password"
+           type="password"
+           id="password"
+           autocomplete="current-password"
+           name="password" required>
 
-</form>
+    <div class="radio-button-container">
+      <label for="roleAdmin">Admin </label>
+        <input formControlName="role"
+               type="radio"
+               id="roleAdmin"
+               class="role"
+               name="role"
+               value="admin">
 
+
+      <label for="roleUser">User</label>
+        <input formControlName="role"
+               type="radio"
+               id="roleUser"
+               class="role"
+               name="role"
+               value="user">
+    </div>
+
+    <div class="button-container">
+      <button type="submit" class="login">Login</button>
+      <button type="button" (click)="register()" class="register">Register</button>
+    </div>
+  </form>
+</ng-container>
 </body>
+
 </html>

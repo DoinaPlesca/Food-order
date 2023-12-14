@@ -76,4 +76,9 @@ public class UserService
             throw;
         }
     }
+
+    public IEnumerable<User> GetUsersByRole(string role)
+    {
+        return _userRepository.GetUsersByRole(role);
+    }
 }

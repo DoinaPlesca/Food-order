@@ -1,6 +1,7 @@
 <html lang="en">
-<body class="sub_page">
 
+
+<body class="sub_page">
 <ng-container *ngIf="openCategoryModal">
   <div class="modal-overlay" (click)="cancel()"></div>
   <div class="modal-container">
@@ -15,7 +16,10 @@
       <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()" novalidate>
         <div class="form-group">
           <label for="categoryName">Category name</label>
-          <input id="categoryName" formControlName="categoryName" type="text" aria-label="Category name" />
+          <input id="categoryName"
+                 formControlName="categoryName"
+                 type="text"
+                 aria-label="Category name" />
 
           <div *ngIf="this.categoryForm?.controls?.categoryName?.touched && this.categoryForm?.controls?.categoryName?.invalid">
             <div  *ngIf="this.categoryForm?.controls?.categoryName?.errors?.['required']">
