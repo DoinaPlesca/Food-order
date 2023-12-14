@@ -74,16 +74,14 @@ FROM food_order.""User"" WHERE username = @UsernameOrEmail OR email = @UsernameO
     
     public IEnumerable<User> GetUsersByRole(string role)
     {
-        string sql = "SELECT id, username, email, password, salt, algorithm, role " +
-                     "FROM \"User\" WHERE role = @Role";
+        string sql = $"SELECT id, username, email, password, salt, algorithm, role FROM food_order.\"User\" WHERE role = @Role";
     
         using var conn = _dataSource.OpenConnection();
-        return conn.Query<User>(sql, new { Role = role });
+        var users = conn.Query<User>(sql, new { Role = role });
+
+        return users;
     }
 
-    
-  
-   
 
    
   

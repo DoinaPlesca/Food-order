@@ -12,9 +12,10 @@ import { EditCategoryComponent } from "./components/adminPages/edit-category/edi
 import {LoginComponent} from "./components/loginPage/login/login.component";
 
 
+
 const routes: Routes = [
-  {path: '', component : LoginComponent},
-  {path: 'home.html', component : HomeComponent},
+  {path: 'login.html', component : LoginComponent},
+  {path: '', component : HomeComponent},
   {path: 'menu.html' , component: MenuComponent},
   {path: 'about.html' , component: AboutComponent},
   {path: 'reservation.html' , component: ReservationComponent},
@@ -28,7 +29,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes,{ enableTracing: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

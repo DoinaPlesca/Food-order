@@ -72,6 +72,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateModel]
     [Route("/api/login")]
     public IActionResult Login([FromBody] AuthenticationRequest dto)
     {
@@ -96,8 +97,22 @@ public class UserController : ControllerBase
         }
     }
 
+    [HttpGet]
+    [Route("/api/role")]
+    public IActionResult GetUsersByRole(string role)
+    {
+        try
+        {
+            var users = _userService.GetUsersByRole(role);
+            return Ok(users);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest("An error occurred while fetching users by role.");
+        }
+    }
 
-
-
-    
 }
+
+
+

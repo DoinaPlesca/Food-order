@@ -26,6 +26,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditCategoryComponent } from './components/adminPages/edit-category/edit-category.component';
 import { EditProductComponent } from './components/adminPages/edit-product/edit-product.component';
 import {LoginComponent} from "./components/loginPage/login/login.component";
+import { RouterModule } from '@angular/router';
+
 
 @NgModule({
   declarations: [
@@ -62,8 +64,10 @@ import {LoginComponent} from "./components/loginPage/login/login.component";
 
 
 
+
   ],
   providers: [
+
     ProductService,
     CategoryService,
     SharedContentService,
