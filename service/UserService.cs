@@ -48,11 +48,11 @@ public class UserService
     }
 
 
-    public bool VerifyPassword(string usernameOrEmail, string password)
+    public bool VerifyPassword(string usernameOrEmail, string password,string role)
     {
         try
         {
-            var user = _userRepository.GetUserByUsernameOrEmail(usernameOrEmail);
+            var user = _userRepository.GetUserByUsernameOrEmail(usernameOrEmail,role);
 
             if (user == null)
             {

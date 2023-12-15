@@ -1,0 +1,81 @@
+
+<html lang="en">
+<body class="modal-content">
+
+<ng-container *ngIf="openRegisterModal">
+  <div class="modal-overlay" (click)="cancel()"></div>
+  <div class="modal-container">
+
+    <div class="modal-header">
+      <button (click)="cancel()">Cancel</button>
+      <h2> Register</h2>
+      <button (click)="register()">Confirm</button>
+    </div>
+
+    <div class="modal-content">
+  <form [formGroup]="registerForm" (ngSubmit)="register()">
+
+    <div class="form-group">
+    <label for="username">Username</label>
+    <input formControlName="username"
+           type="text"
+           id="username"
+           name="username" required/>
+      <div *ngIf="this.registerForm?.controls?.username?.touched && this.registerForm?.controls?.username?.invalid">
+        <div  *ngIf="this.registerForm?.controls?.username?.errors?.['required']"
+              style="color: red; font-size: 12px;">
+
+          <span>Username is required.</span>
+        </div>
+        <div *ngIf="this.registerForm?.controls?.username?.errors?.['minlength']"
+             style="color: red; font-size: 12px;">
+          <span>Username should be min 5 chars long.</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input formControlName="email" type="text" id="email" name="email" required/>
+      <div *ngIf="email?.hasError('required') && email?.touched" style="color: red; font-size: 12px;">Email is required.</div>
+      <div *ngIf="email?.hasError('email') && (email?.dirty || email?.touched)" style="color: red; font-size: 12px;">Enter a valid email address.</div>
+      <div *ngIf="email?.hasError('minlength') && (email?.dirty || email?.touched)" style="color: red; font-size: 12px;">Email should be min 5 chars long.</div>
+      <div *ngIf="email?.hasError('invalidDomain') && (email?.dirty || email?.touched)" style="color: red; font-size: 12px;">The email should end with yahoo.com / gmail.com</div>
+    </div>
+    <div class="form-group">
+        <label for="password">Password </label>
+        <input formControlName="password"
+           type="password"
+           id="password"
+           autocomplete="current-password"
+           name="password" required
+        />
+      <div *ngIf="this.registerForm?.controls?.password?.touched && this.registerForm?.controls?.password?.invalid">
+        <div *ngIf="this.registerForm?.controls?.password?.errors?.['required']" style="color: red; font-size: 12px;">
+          <span> Password is required.</span>
+        </div>
+        <div *ngIf="this.registerForm?.controls?.password?.errors?.['pattern']" style="color: red; font-size: 12px;">
+          <span>Please provide a valid password.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="role">Role</label>
+      <select id="role" formControlName="role">
+        <option *ngFor="let role of roles" [value]="role">
+          {{ role }}
+        </option>
+      </select>
+      <div *ngIf="this.registerForm?.controls?.role?.touched && this.registerForm?.controls?.role?.invalid">
+        <div *ngIf="this.registerForm?.controls?.role?.errors?.['required']" style="color: red; font-size: 12px;">
+          <span>Role is required.</span>
+        </div>
+      </div>
+    </div>
+   </form>
+    </div>
+  </div>
+</ng-container>
+</body>
+
+</html>

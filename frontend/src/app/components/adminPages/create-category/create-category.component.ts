@@ -12,6 +12,7 @@ import { CategoryService } from 'src/app/services/categoryService';
 import { ErrorService } from 'src/app/services/errorService';
 import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.service';
 import { State } from 'src/app/services/state';
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-create-category',
@@ -31,16 +32,13 @@ export class CreateCategoryComponent implements OnInit{
     categoryImageUrl: ['', Validators.required],
   });
 
-
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
     private state: State,
     public router: Router,
-    private toastr: ToastrService,
     private errorService: ErrorService,
     private categoryService: CategoryService,
-    private sharedService: SharedProductCategoryService
+
 
   ) {}
 
@@ -49,25 +47,26 @@ export class CreateCategoryComponent implements OnInit{
   }
 
   async saveCategory(): Promise<void> {
-    if (this.categoryForm.valid) {
-      try {
-        const categoryData = this.categoryForm.getRawValue();
-        const savedCategory = await this.categoryService.saveCategory(categoryData);
+    if (!this.categoryForm.valid) {
+      this.errorService.showInvalidFormError();
+      return;
+    }
 
-        if (savedCategory) {
-          this.state.categories.push(savedCategory);
-          this.errorService.showCategorySuccess();
-          this.router.navigate(['/main.html']);
-        }
-      } catch (e) {
-        if (e instanceof HttpErrorResponse) {
-          this.errorService.handleHttpError(e);
-        } else {
-          console.error('An unexpected error occurred', e);
-        }
+    try {
+      const categoryData = this.categoryForm.getRawValue();
+      const savedCategory = await this.categoryService.saveCategory(categoryData);
+
+      if (savedCategory) {
+        this.state.categories.push(savedCategory);
+        this.errorService.showSuccessMessage('Category has been successfully created');
+        this.cancel();
       }
-    } else {
-      this.errorService.showCategoryError('Please provide all the required values!');
+    } catch (error) {
+      if (error instanceof HttpErrorResponse) {
+        this.errorService.handleHttpError(error);
+      } else {
+        console.error('An unexpected error occurred', error);
+      }
     }
   }
 
@@ -77,9 +76,6 @@ export class CreateCategoryComponent implements OnInit{
     this.router.navigate(['/main.html']);
   }
 
-  get errorControl() {
-    return this.categoryForm.controls;
-  }
 
   ngOnDestroy(): void {
     this.selectedItemSubscription.unsubscribe();

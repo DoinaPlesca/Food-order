@@ -9,6 +9,7 @@ import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.s
 import { ProductService } from 'src/app/services/productService';
 import { State } from 'src/app/services/state';
 import { ErrorService } from 'src/app/services/errorService';
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-edit-product',
@@ -21,16 +22,16 @@ export class EditProductComponent implements OnInit {
   productForm: FormGroup;
   product: Product | null = null;
 
-
-
   constructor(
     private sharedService: SharedProductCategoryService,
     private productService: ProductService,
     private fb: FormBuilder,
     private errorService: ErrorService,
     private route: ActivatedRoute,
+    private router: Router,
     public state: State,
-    private router:Router
+
+
   ) {
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(5)]],
@@ -67,7 +68,7 @@ export class EditProductComponent implements OnInit {
       }
     } catch (error) {
       console.error('Failed to load product data for editing', error);
-      // Handle error as needed
+      this.errorService.handleHttpError(error);
     }
   }
 
@@ -80,17 +81,21 @@ export class EditProductComponent implements OnInit {
         try {
           const productData = await this.productService.getProductById(productId);
           await this.productService.updateProductById(productId, this.productForm.value);
-          this.productService.getAllProducts();
-          this.cancel()
+
+          this.errorService.showSuccessMessage('Product updated successfully.');
+
+          await this.productService.getAllProducts();
+
+          this.cancel();
 
         } catch (error) {
-          console.error('Failed to update product:', error);
+
+          this.errorService.handleHttpError(error);
         }
-      } else {
-        console.error('Product ID is undefined. Cannot update product.');
       }
     }
   }
+
   getProductId(): number {
     const productId = this.route.snapshot.params['id'];
     return productId;
@@ -102,13 +107,14 @@ export class EditProductComponent implements OnInit {
       await this.sharedService.loadAllCategories();
       this.categories = this.sharedService.getCategories();
     } catch (error) {
-      console.error('Failed to load all categories', error);
+      this.errorService.handleHttpError(error);
     }
   }
   cancel() {
     this.resetForm();
     this.openEditProductModal = false;
-    this.sharedService.loadAllProducts();this.router.navigate(['/main.html']);
+    this.sharedService.loadAllProducts();
+    this.router.navigate(['/main.html']);
 
 
  }

@@ -8,6 +8,7 @@ import {environment} from "../environments/environment";
 import { Injectable } from "@angular/core";
 import { ErrorService } from "./errorService";
 import { ToastrService } from "ngx-toastr";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable({
   providedIn: 'root',
@@ -18,9 +19,7 @@ export class ProductService {
     private state: State,
     private http: HttpClient,
     private errorService: ErrorService,
-    private toastr: ToastrService
-  ) {
-  }
+  ) {}
 
 
   async getAllProducts(): Promise<Product[]> {
@@ -31,8 +30,8 @@ export class ProductService {
       this.state.setProducts(res.responseData);
       return res.responseData;
     } catch (error) {
-      console.error('Failed to fetch products. Please try again later.');
-      throw error;
+      this.errorService.handleHttpError(error)
+      throw error
     }
   }
 
@@ -41,15 +40,17 @@ export class ProductService {
       await this.http.delete<ResponseDto<Product>>(
         `${environment.BASE_URL}/food/order/${productId}`
       ).toPromise();
+
       const updatedProducts = this.state.getProducts().filter(product => product.productId !== productId);
       this.state.setProducts(updatedProducts);
+      this.errorService.showSuccessMessage(`Item deleted successfully.`);
 
-      console.log(`Item with id ${productId} deleted successfully.`);
     } catch (error) {
-      console.error(`Failed to delete item with id ${productId}.`, error);
+      this.errorService.handleHttpError(error);
       throw error;
     }
   }
+
 
   async saveProduct(productData: any): Promise<Product | null> {
     try {
@@ -61,61 +62,45 @@ export class ProductService {
       return response?.responseData || null;
 
     } catch (error) {
-      if (error instanceof HttpErrorResponse) {
-
-        this.errorService.handleHttpError(error);
-      } else {
-        console.error('An unexpected error occurred while saving category', error);
-      }
-      return null;
+      this.errorService.handleHttpError(error);
+      throw error;
     }
   }
+
 
   async getProductById(productId: number): Promise<Product> {
     try {
       const res: any = await firstValueFrom(
         this.http.get<ResponseDto<Product>>(
-          `${environment.BASE_URL}/food/order/${productId}`
-        )
+          `${environment.BASE_URL}/food/order/${productId}`)
       );
-
       const product: Product = res.responseData;
-
       this.state.currentProduct = product;
-
       return product;
 
     } catch (error) {
-      if (error instanceof HttpErrorResponse) {
-        this.errorService.handleHttpError(error);
-      } else {
-        console.error('An unexpected error occurred while fetching product', error);
-      }
+      this.errorService.handleHttpError(error);
       throw error;
     }
   }
 
 
   async updateProductById(id: number, data: any) : Promise<void> {
-  try {
-    const res: any = await firstValueFrom(
-      this.http.put<ResponseDto<Product>>(environment.BASE_URL + '/food/order/update/' + id, data)
-    );
+    try {
+      const res: any = await firstValueFrom(
+        this.http.put<ResponseDto<Product>>(environment.BASE_URL + '/food/order/update/' + id, data)
+      );
+      this.state.currentProduct = res.responseData;
 
-    this.state.currentProduct = res.responseData;
-    this.toastr.show('Success update', 'Success');
-     await this.getAllProducts();
+      this.errorService.showSuccessMessage('Success update');
+      await this.getAllProducts();
 
-  } catch (error) {
-    if (error instanceof HttpErrorResponse) {
+    } catch (error) {
       this.errorService.handleHttpError(error);
-    } else {
-      this.toastr.show('Error', 'Error');
     }
   }
-}
 
-  async getAllProductsForSelectedCategory(categoryId: number): Promise<Product[]> {
+ async getAllProductsForSelectedCategory(categoryId: number): Promise<Product[]> {
     try {
       const res: any = await firstValueFrom(
         this.http.get<ResponseDto<Product[]>>(`${environment.BASE_URL}/food/order/category/${categoryId}/product`)
@@ -125,7 +110,7 @@ export class ProductService {
 
       return res.responseData;
     } catch (error) {
-      console.error('Failed to fetch products for the selected category. Please try again later.');
+      this.errorService.handleHttpError(error)
       throw error;
     }
   }

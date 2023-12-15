@@ -5,11 +5,14 @@ import {Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
 
 import { User } from 'src/app/models/user';
-import { firstValueFrom } from 'rxjs';
+import {Observable, firstValueFrom } from 'rxjs';
 import { environment } from 'src/app/environments/environment';
 import { ResponseDto } from 'src/app/models/responsiveHelper/responseDto';
 import { State } from 'src/app/services/state';
 import { ErrorService } from 'src/app/services/errorService';
+import {MatDialog} from "@angular/material/dialog";
+import { RegisterComponent } from '../register/register.component';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 
 
@@ -21,6 +24,8 @@ import { ErrorService } from 'src/app/services/errorService';
 export class LoginComponent implements OnInit{
   openLoginModal: boolean = false;
   currentUser: User | undefined;
+  roleError: boolean = false;
+
 
   loginForm = this.fb.group({
     usernameOrEmail: ['', Validators.required],
@@ -36,53 +41,63 @@ export class LoginComponent implements OnInit{
     private http: HttpClient,
     private state: State,
     public router: Router,
-    private toastr: ToastrService,
-    private errorService: ErrorService,
-
+    private dialog:MatDialog,
+    private snackBar: MatSnackBar,
+    private errorService: ErrorService
   ) {}
 
 
   ngOnInit(): void {
     this.openLoginModal= true;}
 
-    async login() {
-      try {
-        const observable = this.http.post<ResponseDto<User>>
-        (environment.BASE_URL + '/api/login', this.loginForm.getRawValue())
+  async login() {
+    try {
+      const observable = this.http.post<ResponseDto<User>>
+      (environment.BASE_URL + '/api/login', this.loginForm.getRawValue())
 
-        const response = await firstValueFrom(observable);
+      const response = await firstValueFrom(observable);
 
-        this.currentUser = response.responseData;
+      this.currentUser = response.responseData;
 
-        if (this.currentUser !== undefined) {
-          this.state.setCurrentUser(this.currentUser);
+      if (this.currentUser !== undefined) {
+        this.state.setCurrentUser(this.currentUser);
 
-          const selectedRole = this.loginForm.get('role')?.value;
+        const selectedRole = this.loginForm.get('role')?.value;
 
-          if (selectedRole === 'admin') {
-            this.navigateToAdmin();
-          } else if (selectedRole === 'user') {
-            this.navigateToUser();
-          }
-
+        if (selectedRole === 'admin') {
+          this.navigateToAdmin();
+        } else if (selectedRole === 'user') {
+          this.navigateToUser();
         }
-        const toast = this.toastr.success('SUCCESS LOGIN');
-      } catch (e) {
-        // Handle errors if necessary
+        this.errorService.showSuccessMessage('Successfully logged in!');
       }
+
+    } catch (error) {
+      this.errorService.handleHttpError(error);
+      this.errorService.showValidationError('Please fill in all fields correctly!')
     }
+  }
+
 
   private navigateToAdmin() {
-
     this.router.navigate(['/main.html']);
   }
 
   private navigateToUser() {
-
     this.router.navigate(['/home.html']);
   }
+  register(){
+    const dialogRef = this.dialog.open(RegisterComponent, {});
+    dialogRef.afterClosed().subscribe(result => {
 
-  async getUserByRole(role: string): Promise<User> {
+    });
+
+
+  }
+
+}
+
+ /* async getUserByRole(role: string): Promise<User> {
     try {
       const res: any = await firstValueFrom(
         this.http.get<ResponseDto<User>>(
@@ -107,12 +122,5 @@ export class LoginComponent implements OnInit{
       throw error;
     }
   }
+*/
 
-
-
-  register(){
-
-
-  }
-
-}

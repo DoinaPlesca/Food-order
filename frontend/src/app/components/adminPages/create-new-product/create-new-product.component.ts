@@ -11,6 +11,7 @@ import { ErrorService } from 'src/app/services/errorService';
 import { ProductService } from 'src/app/services/productService';
 import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.service';
 import { State } from 'src/app/services/state';
+import {MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-create-new-product',
@@ -42,8 +43,8 @@ export class CreateNewProductComponent implements OnInit {
     private state: State,
     private router: Router,
     private errorService: ErrorService,
-  ) {
-  }
+
+  ) {}
 
   ngOnInit(): void {
     this.loadAllCategories();
@@ -61,35 +62,33 @@ export class CreateNewProductComponent implements OnInit {
           return;
         }
 
-        const productData = {...this.productForm.getRawValue(), categoryId};
+        const productData = { ...this.productForm.getRawValue(), categoryId };
         console.log('Request Payload:', productData);
 
         const savedProduct = await this.productService.saveProduct(productData);
 
         if (savedProduct) {
-          const productWithCategory = {...savedProduct, category: {categoryId}};
-
+          const productWithCategory = { ...savedProduct, category: { categoryId } };
           this.state.products.push(productWithCategory);
-          this.errorService.showProductSuccess();
-          this.router.navigate(['/main.html']);
-        } else {
-          this.errorService.showProductError('Failed to get valid response data.');
+          this.errorService.showSuccessMessage('Successfully created!');
+          this.cancel();
         }
-      } catch (e) {
-        this.errorService.showProductError('An error occurred while saving the product.');
+      } catch (error) {
+        console.error('An error occurred while saving the product:', error);
+        this.errorService.handleHttpError(error);
       }
     } else {
       this.errorService.showProductValidationError('Please provide all the required values!');
     }
-
   }
+
 
   async loadAllCategories(): Promise<void> {
     try {
       await this.sharedService.loadAllCategories();
       this.categories = this.sharedService.getCategories();
     } catch (error) {
-      console.error('Failed to load all categories', error);
+     this.errorService.handleHttpError(error);
     }
   }
 
@@ -98,10 +97,11 @@ export class CreateNewProductComponent implements OnInit {
   }
 
   cancel() {
-    this.resetForm()
+    this.resetForm();
     this.openModal = false;
     this.router.navigate(['/main.html']);
   }
+
 
   resetForm(): void {
     this.productForm.reset();

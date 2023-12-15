@@ -27,6 +27,7 @@ import { EditCategoryComponent } from './components/adminPages/edit-category/edi
 import { EditProductComponent } from './components/adminPages/edit-product/edit-product.component';
 import {LoginComponent} from "./components/loginPage/login/login.component";
 import { RouterModule } from '@angular/router';
+import { RegisterComponent } from './components/loginPage/register/register.component';
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import { RouterModule } from '@angular/router';
     EditCategoryComponent,
     EditProductComponent,
     LoginComponent,
+    RegisterComponent,
 
 
 

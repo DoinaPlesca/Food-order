@@ -5,29 +5,18 @@ import { Product } from 'src/app/models/product';
 import { CategoryService } from 'src/app/services/categoryService';
 import { ProductService } from 'src/app/services/productService';
 import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.service';
-import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import {MatDialog, MatDialogConfig, MatDialogModule} from "@angular/material/dialog";
 import { CreateNewProductComponent } from '../create-new-product/create-new-product.component';
 import { CreateCategoryComponent } from '../create-category/create-category.component';
 import { Router } from '@angular/router';
 import {animate, state, style, transition, trigger } from '@angular/animations';
 import { EditProductComponent } from '../edit-product/edit-product.component';
 import { EditCategoryComponent } from '../edit-category/edit-category.component';
+import { ErrorService } from 'src/app/services/errorService';
+import {MatSnackBar} from "@angular/material/snack-bar";
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-
- /* animations: [
-  trigger('flyInOut', [
-    state('in', style({ transform: 'translateX(0)' })),
-    transition('void => *', [
-      style({ transform: 'translateX(-100%)' }),
-      animate(100)
-    ]),
-    transition('* => void', [
-      animate(300, style({ transform: 'translateX(100%)' }))
-    ])
-  ])
-]*/
 })
 
 export class MainComponent implements OnInit {
@@ -40,17 +29,15 @@ export class MainComponent implements OnInit {
     private sharedService: SharedProductCategoryService,
     private productService: ProductService,
     private categoryService: CategoryService,
-    private cdRef: ChangeDetectorRef,
     private dialog:MatDialog,
     private router :Router,
-
+    private errorService: ErrorService,
 
   ) {}
 
 
   ngOnInit(): void {
     this.loadData();
-
   }
 
   async loadData() {
@@ -64,7 +51,7 @@ export class MainComponent implements OnInit {
         this.products = this.sharedService.getProducts();
       }
     } catch (error) {
-      console.error('Failed to load data:', error);
+      this.errorService.handleHttpError(error);
     }
   }
 
@@ -103,26 +90,26 @@ export class MainComponent implements OnInit {
     const itemId = this.sharedService.isProduct(item) ? item.productId : item.categoryId;
 
     if (itemId !== undefined) {
-      if (this.sharedService.isProduct(item)) {
-        this.productService.deleteProductById(itemId)
-          .then(() => {
-            this.products = this.products.filter(product => product.productId !== itemId);
-            console.log(`Product with id ${itemId} deleted successfully.`);
-          })
-          .catch(error => {
-            console.error(`Failed to delete product with id ${itemId}.`, error);
-          });
-      } else {
+      const deleteAction = this.sharedService.isProduct(item)
+        ? () => this.productService.deleteProductById(itemId)
+        : () => this.categoryService.deleteCategoryById(itemId);
 
-        this.categoryService.deleteCategoryById(itemId)
-          .then(() => {
+      deleteAction()
+        .then(() => {
+          if (this.sharedService.isProduct(item)) {
+            this.products = this.products.filter(product => product.productId !== itemId);
+
+            this.errorService.showSuccessMessage('Product deleted successfully.');
+          } else {
             this.categories = this.categories.filter(category => category.categoryId !== itemId);
-            console.log(`Category with id ${itemId} deleted successfully.`);
-          })
-          .catch(error => {
-            console.error(`Failed to delete category with id ${itemId}.`, error);
-          });
-      }
+
+            this.errorService.showSuccessMessage('Category deleted successfully.');
+          }
+        })
+        .catch(error => {
+          console.error(`Failed to delete this item.`, error);
+          this.errorService.handleHttpError(error);
+        });
     } else {
       console.error('Item ID is undefined. Cannot delete item.');
     }
@@ -132,27 +119,35 @@ export class MainComponent implements OnInit {
     const itemId = this.sharedService.isProduct(item) ? item.productId : item.categoryId;
 
     if (itemId !== undefined) {
-      if (this.sharedService.isProduct(item)) {
-        this.router.navigate(['/edit-product', itemId]);
-      } else if (this.sharedService.isCategory(item)) {
-        this.router.navigate(['/edit-category', itemId]);
-      } else {
-        console.error('Unsupported item type. Cannot edit item.');
-      }
+      const editRoute = this.sharedService.isProduct(item) ? '/edit-product' : '/edit-category';
+
+      this.router.navigate([editRoute, itemId])
+        .then(() => {
+          const itemType = this.sharedService.isProduct(item) ? 'Product' : 'Category';
+
+          this.errorService.showSuccessMessage(`${itemType} is being edited.`);
+        })
+        .catch(error => {
+          console.error(`Failed to navigate to edit page for this item.`, error);
+          this.errorService.handleHttpError(error);
+        });
     } else {
       console.error('Item ID is undefined. Cannot edit item.');
     }
   }
 
-  
+
   openModal(): void {
     const dialogRef = this.dialog.open(CreateNewProductComponent, {});
-    dialogRef.afterClosed().subscribe(result => {});
+    dialogRef.afterClosed().subscribe(result => {
+    });
   }
 
   openCategoryModal(): void {
     const dialogRef = this.dialog.open(CreateCategoryComponent, {});
-    dialogRef.afterClosed().subscribe(result => {});
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Dialog closed with result:', result);
+    });
   }
 
 }

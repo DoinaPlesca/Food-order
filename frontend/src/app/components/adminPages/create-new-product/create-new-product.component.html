@@ -23,10 +23,10 @@
             aria-label="Product name"
           />
           <div *ngIf="this.productForm?.controls?.name?.touched && this.productForm?.controls?.name?.invalid">
-            <div  *ngIf="this.productForm?.controls?.name?.errors?.['required']">
+            <div  *ngIf="this.productForm?.controls?.name?.errors?.['required']"style="color: red; font-size: 12px;">
               <span>Name is required.</span>
             </div>
-            <div *ngIf="this.productForm?.controls?.name?.errors?.['minlength']">
+            <div *ngIf="this.productForm?.controls?.name?.errors?.['minlength']"style="color: red; font-size: 12px;">
               <span>Name should be min 5 chars long.</span>
             </div>
           </div>
@@ -40,10 +40,10 @@
             aria-label="Description"
           />
           <div *ngIf="this.productForm?.controls?.description?.touched && this.productForm?.controls?.description?.invalid">
-            <div *ngIf="this.productForm?.controls?.description?.errors?.['required']">
+            <div *ngIf="this.productForm?.controls?.description?.errors?.['required']"style="color: red; font-size: 12px;">
               <span>Description is required.</span>
             </div>
-            <div *ngIf="this.productForm?.controls?.description?.errors?.['pattern']">
+            <div *ngIf="this.productForm?.controls?.description?.errors?.['pattern']"style="color: red; font-size: 12px;">
               <span>Please provide a valid description.</span>
             </div>
           </div>
@@ -56,10 +56,10 @@
             type="text"
             aria-label="Price"/>
           <div *ngIf="this.productForm?.controls?.price?.touched && this.productForm?.controls?.price?.invalid">
-            <div *ngIf="this.productForm?.controls?.price?.errors?.['required']">
+            <div *ngIf="this.productForm?.controls?.price?.errors?.['required']"style="color: red; font-size: 12px;">
               <span>Price is required.</span>
             </div>
-            <div *ngIf="this.productForm?.controls?.price?.errors?.['pattern']">
+            <div *ngIf="this.productForm?.controls?.price?.errors?.['pattern']"style="color: red; font-size: 12px;">
               <span>Price must be a positive number.</span>
             </div>
           </div>
@@ -71,7 +71,7 @@
             formControlName="quantity"
             type="number"
             aria-label="Quantity"/>
-          <div *ngIf="this.productForm?.controls?.quantity?.touched && this.productForm?.controls?.quantity?.invalid">
+          <div *ngIf="this.productForm?.controls?.quantity?.touched && this.productForm?.controls?.quantity?.invalid"style="color: red; font-size: 12px;">
             <span> Enter the desired quantity.</span>
           </div>
         </div>
