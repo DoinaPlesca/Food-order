@@ -80,14 +80,13 @@ public class UserController : ControllerBase
         {
             var usernameOrEmail = dto.UsernameOrEmail;
             var password = dto.Password;
+            var role = dto.Role;
 
-            if (!_userService.VerifyPassword(usernameOrEmail, password))
+            if (!_userService.VerifyPassword(usernameOrEmail, password,role))
             {
-               
                 return StatusCode(StatusCodes.Status401Unauthorized,
-                    _responseHelper.InternalServerError("Invalid username/email or password",errorMessage: "fail"));
+                    _responseHelper.InternalServerError("Invalid username/email or password", errorMessage: "fail"));
             }
-            
 
             return Ok(_responseHelper.Success(StatusCodes.Status200OK, "Login successful"));
         }

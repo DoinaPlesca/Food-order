@@ -10,6 +10,7 @@ import { ErrorService } from 'src/app/services/errorService';
 import { CategoryService } from 'src/app/services/categoryService';
 import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.service';
 import { Product } from 'src/app/models/product';
+import {MatDialogRef} from "@angular/material/dialog";
 @Component({
   selector: 'app-edit-category',
   templateUrl: './edit-category.component.html',
@@ -22,14 +23,14 @@ export class EditCategoryComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
     public state: State,
     public router: Router,
-    private toastr: ToastrService,
     private errorService: ErrorService,
     private categoryService: CategoryService,
-    private sharedService: SharedProductCategoryService,
     private route: ActivatedRoute,
+    private sharedService : SharedProductCategoryService,
+
+
 
   ) {
     this.categoryForm = this.fb.group({
@@ -46,53 +47,51 @@ export class EditCategoryComponent implements OnInit {
 
   }
 
-
-
   async loadCategoryForEditing(categoryId: number): Promise<void> {
     try {
       const categoryData = await this.categoryService.getCategoryById(categoryId);
 
       if (categoryData) {
         console.log('Category Data:', categoryData);
-          this.categoryForm.patchValue({
-            categoryName: categoryData.categoryName,
-            categoryImageUrl: categoryData.categoryImageUrl,
-          });
-
+        this.categoryForm.patchValue({
+          categoryName: categoryData.categoryName,
+          categoryImageUrl: categoryData.categoryImageUrl,
+        });
       } else {
         console.error('Category ID is undefined. Cannot load category data for editing.');
       }
     } catch (error) {
       console.error('Failed to load category data for editing', error);
-
-      if (error instanceof HttpErrorResponse) {
-        this.errorService.handleHttpError(error);
-      } else {
-        console.error('An unexpected error occurred while loading category data', error);
-      }
+      this.errorService.handleHttpError(error);
     }
   }
 
+
   async updateCategory() {
-    if(this.categoryForm.valid) {
+    if (this.categoryForm.valid) {
       const categoryId: number = this.getCategoryId();
 
-      if(categoryId !== undefined) {
-        try{
+      if (categoryId !== undefined) {
+        try {
           const categoryData = await this.categoryService.getCategoryById(categoryId);
           await this.categoryService.updateCategoryById(categoryId, this.categoryForm.value);
 
-          this.categoryService.getAllCategories();
-          this.cancel()
+          this.errorService.showSuccessMessage('Category updated successfully.');
 
+          await this.categoryService.getAllCategories();
+
+          this.cancel();
         } catch (error) {
           console.error('Failed to update category:', error);
+
+          this.errorService.handleHttpError(error);
         }
       } else {
         console.error('Category ID is undefined. Cannot update category.');
       }
     }
   }
+
 
   getCategoryId(): number {
     const categoryId = this.route.snapshot.params['id'];
@@ -105,11 +104,9 @@ export class EditCategoryComponent implements OnInit {
   cancel() {
     this.resetForm();
     this.openEditCategoryModal = false;
-    this.sharedService.loadAllCategories();this.router.navigate(['/main.html']);
+    //this.sharedService.loadAllCategories();
+    this.router.navigate(['/main.html']);
 
-  }
 
-  get errorControl() {
-    return this.categoryForm.controls;
   }
 }

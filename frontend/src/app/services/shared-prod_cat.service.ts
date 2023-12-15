@@ -24,8 +24,6 @@ export class SharedProductCategoryService {
     this.selectedItemSubject.next(item);
   } /*main component*/
 
-
-
   async loadAllProducts(): Promise<void> {
     try {
       this.products = await this.productService.getAllProducts();
@@ -49,7 +47,6 @@ export class SharedProductCategoryService {
   getCategories(): Category[] {
     return this.categories || [];
   }
-
 
   selectCategory(categoryId: number): void {
     this.selectedCategoryId = categoryId;
@@ -85,7 +82,8 @@ export class SharedProductCategoryService {
   isImageUrl(url: string): boolean {
     return url.endsWith('.jpg') || url.endsWith('.png');
   }
-  async getAllProductsForSelectedCategory(categoryId: number): Promise<Product[]> {
+
+   async getAllProductsForSelectedCategory(categoryId: number): Promise<Product[]> {
     try {
       if (this.selectedCategoryId === null) {
         throw new Error('No category selected.');

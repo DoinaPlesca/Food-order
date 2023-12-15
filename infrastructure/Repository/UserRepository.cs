@@ -52,16 +52,19 @@ public class UserRepository
     }
 
 
-    public User GetUserByUsernameOrEmail(string usernameOrEmail)
+    public User GetUserByUsernameOrEmail(string usernameOrEmail,string role)
     {
         string sql = @"SELECT id, username, email, password, salt, algorithm, role 
-FROM food_order.""User"" WHERE username = @UsernameOrEmail OR email = @UsernameOrEmail";
-       
-        Console.WriteLine($"Executing SQL query: {sql}");
-        using var conn = _dataSource.OpenConnection();
-        return conn.QuerySingleOrDefault<User>(sql, new { UsernameOrEmail = usernameOrEmail });
-    }
+                   FROM food_order.""User"" 
+                   WHERE (username = @UsernameOrEmail OR email = @UsernameOrEmail)
+                     AND role = @Role";
 
+        Console.WriteLine($"Executing SQL query: {sql}");
+
+        using var conn = _dataSource.OpenConnection();
+    
+        return conn.QuerySingleOrDefault<User>(sql, new { UsernameOrEmail = usernameOrEmail, Role = role });
+    }
 
     public IEnumerable<UserFeedQuery> GetAllUsers()
     {

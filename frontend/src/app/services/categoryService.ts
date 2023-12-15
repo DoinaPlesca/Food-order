@@ -7,6 +7,7 @@ import {ResponseDto} from "../models/responsiveHelper/responseDto";
 import {environment} from "../environments/environment";
 import { ErrorService } from "./errorService";
 import {ToastrService} from "ngx-toastr";
+import {extractRoutes} from "@angular-devkit/build-angular/src/utils/routes-extractor/extractor";
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +19,6 @@ export class CategoryService {
     private state: State,
     private http: HttpClient,
     private  errorService: ErrorService,
-    private toastr: ToastrService
-
   ) {}
 
   async getAllCategories(): Promise<Category[]> {
@@ -31,7 +30,7 @@ export class CategoryService {
       this.state.setCategories(res.responseData);
       return res.responseData;
     } catch (error) {
-      console.error('Failed to fetch categories. Please try again later.');
+      this.errorService.handleHttpError(error);
       throw error;
     }
   }
@@ -46,10 +45,9 @@ export class CategoryService {
 
       const updatedCategories = this.state.getCategories().filter(category => category.categoryId !== categoryId);
       this.state.setCategories(updatedCategories);
-
-      console.log(`Category with id ${categoryId} deleted successfully.`);
+      console.log(`Category  deleted successfully.`);
     } catch (error) {
-      console.error(`Failed to delete category with id ${categoryId}.`, error);
+      this.errorService.handleHttpError(error);
       throw error;
     }
   }
@@ -60,17 +58,12 @@ export class CategoryService {
         environment.BASE_URL + '/food/order/category',
         categoryData
       );
-
       const response = await firstValueFrom(observable);
 
+      this.errorService.showSuccessMessage('Category saved successfully');
       return response?.responseData || null;
     } catch (error) {
-      if (error instanceof HttpErrorResponse) {
-
-        this.errorService.handleHttpError(error);
-      } else {
-        console.error('An unexpected error occurred while saving category', error);
-      }
+      this.errorService.handleHttpError(error);
       return null;
     }
   }
@@ -86,14 +79,12 @@ export class CategoryService {
 
       this.state.currentCategory = category;
 
+      this.errorService.showSuccessMessage('Category fetched successfully');
+
       return category;
 
     } catch (error) {
-      if (error instanceof HttpErrorResponse) {
-        this.errorService.handleHttpError(error);
-      } else {
-        console.error('An unexpected error occurred while fetching category', error);
-      }
+      this.errorService.handleHttpError(error);
       throw error;
     }
   }
@@ -105,22 +96,15 @@ export class CategoryService {
       );
 
       this.state.currentCategory = res.responseData;
-      this.toastr.show('Success update', 'Success');
+      this.errorService.showSuccessMessage('Category updated successfully');
+
+
       await this.getAllCategories();
 
     } catch (error) {
-      if (error instanceof HttpErrorResponse) {
-        this.errorService.handleHttpError(error);
-      } else {
-        this.toastr.show('Error', 'Error');
-      }
+      this.errorService.handleHttpError(error);
     }
   }
-
-
-
-
-
 
 
 }

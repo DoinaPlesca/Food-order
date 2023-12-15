@@ -10,7 +10,7 @@
   <header class="header_section">
     <div class="container">
       <nav class="navbar navbar-expand-lg custom_nav-container ">
-        <a class="navbar-brand" href="index.html">
+        <a class="navbar-brand" >
             <span>
               FlavorFrame
             </span>
@@ -20,7 +20,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav  mx-auto ">
             <li class="nav-item active">
-              <a class="nav-link" href="index.html">Home </a>
+              <a class="nav-link" href="home.html">Home </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="menu.html">Menu</a>
@@ -223,7 +223,7 @@
               <h6>
                 <span>15%</span> Off
               </h6>
-              <a href="">
+             <!-- <a href="">
                 Order Now <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 456.029 456.029" style="enable-background:new 0 0 456.029 456.029;" xml:space="preserve">
                     <g>
                       <g>
@@ -276,7 +276,7 @@
                 <g>
                     </g>
                   </svg>
-              </a>
+              </a>-->
             </div>
           </div>
         </div>
@@ -297,13 +297,14 @@
       </h2>
     </div>
     <ul class="filters_menu">
-
-      <li *ngFor="let category of categories">{{ category.categoryName }}</li>
+      <li *ngFor="let category of categories" (click)="selectCategory(category)">
+        {{ category.categoryName }}
+      </li>
     </ul>
 
     <div class="filters-content">
       <div class="row grid">
-        <div class="col-sm-6 col-lg-4" *ngFor ="let product of products">
+        <div class="col-sm-6 col-lg-4" *ngFor ="let product of filteredProducts">
           <div class="box">
             <div>
               <div class="img-box">

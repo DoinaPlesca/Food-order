@@ -22,10 +22,10 @@
                  aria-label="Category name" />
 
           <div *ngIf="this.categoryForm?.controls?.categoryName?.touched && this.categoryForm?.controls?.categoryName?.invalid">
-            <div  *ngIf="this.categoryForm?.controls?.categoryName?.errors?.['required']">
+            <div  *ngIf="this.categoryForm?.controls?.categoryName?.errors?.['required']"style="color: red; font-size: 12px;">
               <span>Name is required.</span>
             </div>
-            <div *ngIf="this.categoryForm?.controls?.categoryName?.errors?.['minlength']">
+            <div *ngIf="this.categoryForm?.controls?.categoryName?.errors?.['minlength']"style="color: red; font-size: 12px;">
               <span>Name should be min 5 chars long.</span>
             </div>
           </div>

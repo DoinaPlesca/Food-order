@@ -220,8 +220,8 @@ body {
 }
 
 .modal-container {
-  width: 800px;
-  height: 550px;
+  width: 750px;
+  height: 470px;
   position: fixed;
   top: 50%;
   left: 50%;

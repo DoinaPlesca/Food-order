@@ -10,12 +10,14 @@ import { CreateCategoryComponent } from "./components/adminPages/create-category
 import { EditProductComponent } from "./components/adminPages/edit-product/edit-product.component";
 import { EditCategoryComponent } from "./components/adminPages/edit-category/edit-category.component";
 import {LoginComponent} from "./components/loginPage/login/login.component";
+import { RegisterComponent } from "./components/loginPage/register/register.component";
 
 
 
 const routes: Routes = [
-  {path: 'login.html', component : LoginComponent},
-  {path: '', component : HomeComponent},
+  {path: '', component : LoginComponent},
+  {path: 'register.html', component : RegisterComponent},
+  {path: 'home.html', component : HomeComponent},
   {path: 'menu.html' , component: MenuComponent},
   {path: 'about.html' , component: AboutComponent},
   {path: 'reservation.html' , component: ReservationComponent},
@@ -29,7 +31,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{ enableTracing: true })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

@@ -10,7 +10,7 @@ import {SharedFooterService} from "../../../services/shared/user-Pages.Service/s
 export class AboutComponent implements OnInit{
   @ViewChild('sharedContent', { static: true }) sharedContent!: ElementRef;
   @ViewChild('sharedFooter', { static: true }) sharedFooter!: ElementRef;
-  slides: any[] = new Array(3).fill({id: -1, src: '', title: '', subtitle: ''});
+
   constructor(
     private sharedContentService: SharedContentService,
     private sharedFooterService: SharedFooterService,
@@ -20,22 +20,7 @@ export class AboutComponent implements OnInit{
   ngOnInit(): void {
     this.sharedContent.nativeElement.innerHTML = this.sharedContentService.getSharedContent();
     this.sharedFooter.nativeElement.innerHTML = this.sharedFooterService.getFooterContent();
-    this.slides[0] = {
-      src: '/assets/images/donut.png',
-    };
-    this.slides[1] = {
-      src: '/assets/images/intro.jpg',
-    }
-    this.slides[2] = {
-      src: '/assets/images/take-away.png',
-    }
   }
-
-  onItemChange($event: any): void {
-    console.log('Carousel onItemChange', $event);
-  }
-
-
 
 
 

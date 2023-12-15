@@ -1,54 +1,79 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import {IndividualConfig, ToastrService } from 'ngx-toastr';
+import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ErrorService {
-  constructor(private toastr: ToastrService) {}
+  constructor(private snackBar: MatSnackBar) {
+  }
 
-  handleHttpError(error: HttpErrorResponse): void {
+  showInvalidFormError(): void {
+    this.snackBar.open('Invalid form. Please check your input.', 'Error', {
+      duration: 5000,
+      verticalPosition: 'top',
+      panelClass: 'error-snackbar',
+
+    });
+  }
+  showValidationError(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      verticalPosition: 'top',
+      panelClass: 'error-snackbar',
+    });
+  }
+  showProductValidationError(message: string): void {
+    this.snackBar.open(message, 'Error', {
+      duration: 5000,
+      verticalPosition: 'top',
+      panelClass: 'error-snackbar',
+    });
+  }
+
+  handleHttpError(error: any, position?: SnackBarPosition): void {
     if (error instanceof HttpErrorResponse) {
-      if (error.status === 400) {
-        this.toastr.error('Bad request. Please check your input.', 'Error');
-      } else if (error.status === 401) {
-        this.toastr.error('Unauthorized. Please log in.', 'Error');
-      } else if (error.status === 403) {
-        this.toastr.error('Forbidden. You do not have permission to access this resource.', 'Error');
-      } else if (error.status === 404) {
-        this.toastr.error('Not found. The requested resource does not exist.', 'Error');
-      } else if (error.status === 500) {
-        this.toastr.error('Internal server error. Please try again later.', 'Error');
-      } else {
-        this.toastr.error('An unexpected error occurred. Please try again later.', 'Error');
-      }
+      const message = this.getErrorMessage(error);
+      this.showSnackBar(message, 'Error', position);
+    } else {
+      this.showSnackBar('An unexpected error occurred. Please try again later.', 'Error', position);
     }
   }
-  showCategorySuccess(): void {
-    this.showSuccess('Category was successfully created');
+
+  showSuccessMessage(message: string, position?: SnackBarPosition): void {
+    this.showSnackBar(message, 'Success', position);
   }
 
-  showCategoryError(message: string): void {
-    this.showError('Error performing category operation. Please try again.', 'Category Error', message);
-  }
-  showProductSuccess(): void {
-    this.showSuccess('Product was successfully created');
-  }
-
-  showProductError(message: string): void {
-    this.showError('Error performing product operation. Please try again.', 'Category Error', message);
+  private showSnackBar(message: string, panelClass: string, position?: SnackBarPosition): void {
+    this.snackBar.open(message, panelClass, {
+      duration: 5000,
+      horizontalPosition: position?.horizontal || 'center',
+      verticalPosition: position?.vertical || 'top',
+    });
   }
 
- showSuccess(message: string): void {
-    this.toastr.success(message, 'Success');
-  }
-
-  showError(message: string, title: string, additionalMessage?: string): void {
-    this.toastr.error(`${message} ${additionalMessage || ''}`, title);
-  }
-
-  showProductValidationError(message: string): void {
-    this.showError(message, 'Product Validation Error');
+  private getErrorMessage(error: HttpErrorResponse): string {
+    switch (error.status) {
+      case 400:
+        return 'Bad request. Please check your input.';
+      case 401:
+        return 'Unauthorized. Please log in.';
+      case 403:
+        return 'Forbidden. You do not have permission to access this resource.';
+      case 404:
+        return 'Not found. The requested resource does not exist.';
+      case 500:
+        return 'Internal server error. Please try again later.';
+      default:
+        return 'An unexpected error occurred. Please try again later.';
+    }
   }
 }
+
+interface SnackBarPosition {
+  horizontal?: MatSnackBarHorizontalPosition;
+  vertical?: MatSnackBarVerticalPosition;
+}
+

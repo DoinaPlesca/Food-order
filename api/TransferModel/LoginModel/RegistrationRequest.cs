@@ -7,7 +7,7 @@ public class RegistrationRequest
 {
     [NotNull]
     [Required]
-    [StringLength(255, MinimumLength = 1)]
+    [StringLength(255, MinimumLength = 3)]
     public string username { get; set; }
 
     [NotNull]
