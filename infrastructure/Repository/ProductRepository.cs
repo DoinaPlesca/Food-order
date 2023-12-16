@@ -148,7 +148,7 @@ public class ProductRepository
         var sql = "SELECT COUNT(*) FROM food_order.\"Category\" WHERE categoryid = @categoryId";
         return connection.ExecuteScalar<int>(sql, new { categoryId }) > 0;
         
-        // execute a query and return the result of the first
+        // update:execute a query and return the result of the first
         // column of the first row in the result set
     }
     

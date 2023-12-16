@@ -38,33 +38,34 @@ export class SharedFooterService {
           </div>
         </div>
       </div>
-      <div class="col-md-4 footer-col">
-        <div class="footer_detail">
-          <a href="" class="footer-logo">
+     <div class="col-md-4 footer-col">
+    <div class="footer_detail">
+        <a href="" class="footer-logo">
             FlavorFrame
-          </a>
-          <p>
+        </a>
+        <p>
             At FlavorFrame, we cherish the opportunity to stay connected with our wonderful community. Join us on social media for the latest updates, mouthwatering food pics, and exclusive offers!
-          </p>
-          <div class="footer_social">
-            <a href="">
-              <i class="fa fa-facebook" aria-hidden="true"></i>
+        </p>
+        <div class="footer_social">
+            <a role="button">
+                <img src="assets/images/facebook.png" width="32" height="32" alt="Facebook">
             </a>
-            <a href="">
-              <i class="fa fa-twitter" aria-hidden="true"></i>
+
+            <a href="#">
+                <img src="assets/images/twitter.png" width="32" height="32" alt="Twitter">
             </a>
-            <a href="">
-              <i class="fa fa-linkedin" aria-hidden="true"></i>
+
+            <a href="#">
+                <img src="assets/images/whatsapp.png" width="32" height="32" alt="WhatsApp">
             </a>
-            <a href="">
-              <i class="fa fa-instagram" aria-hidden="true"></i>
+
+            <a href="#">
+                <img src="assets/images/instagram.png" width="34" height="34" alt="Instagram">
             </a>
-            <a href="">
-              <i class="fa fa-pinterest" aria-hidden="true"></i>
-            </a>
-          </div>
         </div>
-      </div>
+    </div>
+</div>
+
       <div class="col-md-4 footer-col">
         <h4>
           Opening Hours

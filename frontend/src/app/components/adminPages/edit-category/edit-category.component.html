@@ -18,7 +18,7 @@
           <label for="categoryName"> Category Name</label>
           <input id="categoryName"
                  formControlName="categoryName" type="text" aria-label="categoryName" />
-          <div *ngIf="!categoryForm.controls['categoryName'].valid">
+          <div *ngIf="!categoryForm.controls['categoryName'].valid "style="color: red; font-size: 12px;">
             Category name must be 1 characters or more
           </div>
         </div>
@@ -30,6 +30,11 @@
 
           <img *ngIf="categoryForm.get('categoryImageUrl')!.value"
                [src]="categoryForm.get('categoryImageUrl')!.value" alt="Category Image">
+
+          <div *ngIf="categoryForm.get('categoryImageUrl')!.hasError('pattern') && categoryForm.get('categoryImageUrl')!.touched">
+            Please enter a valid URL.
+          </div>
+
         </div>
 
       </form>
