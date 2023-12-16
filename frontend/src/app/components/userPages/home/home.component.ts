@@ -7,6 +7,7 @@ import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.s
 import { ErrorService } from 'src/app/services/errorService';
 
 
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -32,7 +33,6 @@ export class HomeComponent implements OnInit {
     this.sharedFooter.nativeElement.innerHTML = this.sharedFooterService.getFooterContent();
     this.loadAllProducts();
     this.loadAllCategories();
-
   }
 
   async loadAllProducts(): Promise<void> {
@@ -73,7 +73,9 @@ export class HomeComponent implements OnInit {
       console.log('All Products:', this.filteredProducts);
     }
   }
+addToCart(product:any){
 
+}
 
 
 

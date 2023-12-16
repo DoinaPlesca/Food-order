@@ -15,7 +15,7 @@ import {SharedFooterService} from "./services/shared/user-Pages.Service/shared-f
 import {AppComponent} from "./app.component";
 import {CommonModule } from '@angular/common';
 import { SharedProductCategoryService } from './services/shared-prod_cat.service';
-import { NgModule } from '@angular/core';
+import {ChangeDetectorRef, NgModule} from '@angular/core';
 import {MatSortModule} from "@angular/material/sort";
 import {MatDialogActions, MatDialogModule} from '@angular/material/dialog';
 import {MatSelect, MatSelectModule} from "@angular/material/select";
@@ -28,6 +28,8 @@ import { EditProductComponent } from './components/adminPages/edit-product/edit-
 import {LoginComponent} from "./components/loginPage/login/login.component";
 import { RouterModule } from '@angular/router';
 import { RegisterComponent } from './components/loginPage/register/register.component';
+import { CartComponent } from './components/userPages/cart/cart.component';
+import { CartService } from './services/cartService';
 
 
 @NgModule({
@@ -44,8 +46,7 @@ import { RegisterComponent } from './components/loginPage/register/register.comp
     EditProductComponent,
     LoginComponent,
     RegisterComponent,
-
-
+    CartComponent,
 
   ],
 
@@ -67,9 +68,10 @@ import { RegisterComponent } from './components/loginPage/register/register.comp
 
 
 
+
   ],
   providers: [
-
+    CartService,
     ProductService,
     CategoryService,
     SharedContentService,

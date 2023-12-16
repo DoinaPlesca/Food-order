@@ -1,5 +1,6 @@
 ﻿namespace infrastructure.Repository;
 
+
 public class BCryptHashAlgorithm : PasswordHasher
 {
     public const string Name = "bcrypt";

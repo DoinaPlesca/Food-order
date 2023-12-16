@@ -3,7 +3,6 @@ using infrastructure.Repository;
 using Microsoft.Extensions.Logging;
 
 
-
 public abstract class PasswordHasher
 {
     private readonly ILogger<PasswordHasher> _logger;

@@ -11,6 +11,7 @@ import { EditProductComponent } from "./components/adminPages/edit-product/edit-
 import { EditCategoryComponent } from "./components/adminPages/edit-category/edit-category.component";
 import {LoginComponent} from "./components/loginPage/login/login.component";
 import { RegisterComponent } from "./components/loginPage/register/register.component";
+import { CartComponent } from "./components/userPages/cart/cart.component";
 
 
 
@@ -26,6 +27,8 @@ const routes: Routes = [
   {path: 'create-category.html' , component: CreateCategoryComponent},
   {path: 'edit-product/:id', component: EditProductComponent},
   {path: 'edit-category/:id', component: EditCategoryComponent},
+  {path: 'cart.html', component: CartComponent},
+
 
 
 ];
