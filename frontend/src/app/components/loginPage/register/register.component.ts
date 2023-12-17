@@ -75,7 +75,6 @@ export class RegisterComponent implements  OnInit{
 
         if (response && response.responseData) {
           this.state.users.push(response.responseData);
-
           this.errorService.showSuccessMessage('User registered successfully');
         }
 
