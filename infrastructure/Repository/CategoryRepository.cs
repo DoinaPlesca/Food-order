@@ -22,7 +22,7 @@ public class CategoryRepository
             CategoryId AS CategoryId,
             CategoryName AS CategoryName,
             CategoryImageUrl  AS CategoryImageUrl
-        FROM food_order.""Category""
+        FROM food_order.category
     ";
 
         using var conn = _dataSource.OpenConnection();
@@ -39,7 +39,7 @@ public class CategoryRepository
         };
 
         string sql = @"
-        INSERT INTO food_order.""Category"" (CategoryName, CategoryImageUrl)
+        INSERT INTO food_order.category (CategoryName, CategoryImageUrl)
         VALUES (@CategoryName, @CategoryImageUrl)
         RETURNING *";
 
@@ -52,7 +52,7 @@ public class CategoryRepository
     public Category UpdateCategory(int categoryId, string categoryName, string categoryImageUrl)
     { 
         var sql = $@"
-            UPDATE food_order.""Category"" 
+            UPDATE food_order.category
             SET categoryName = @CategoryName,  categoryImageUrl= @CategoryImageUrl
             WHERE categoryId = @CategoryId
             RETURNING categoryId AS {nameof(Category.CategoryId)},
@@ -71,7 +71,7 @@ public class CategoryRepository
     public bool DeleteCategory(int categoryId)
     {
         var sql = @"
-        DELETE FROM food_order.""Category""
+        DELETE FROM food_order.category
         WHERE categoryId = @CategoryId;
     ";
 
@@ -89,7 +89,7 @@ public class CategoryRepository
             categoryid AS CategoryId,
             categoryname AS CategoryName,
             categoryimageurl AS CategoryImageUrl
-        FROM food_order.""Category"" 
+        FROM food_order.category
         WHERE categoryId = @CategoryId";
 
         using var conn = _dataSource.OpenConnection();

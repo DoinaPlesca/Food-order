@@ -24,7 +24,7 @@ export class CategoryService {
   async getAllCategories(): Promise<Category[]> {
     try {
       const res: any = await firstValueFrom(
-          this.http.get<ResponseDto<Category[]>>(`${environment.BASE_URL}/food/order/category`)
+          this.http.get<ResponseDto<Category[]>>(`${environment.BASE_URL}/api/restaurant/category`)
       );
 
       this.state.setCategories(res.responseData);
@@ -39,7 +39,7 @@ export class CategoryService {
   async deleteCategoryById(categoryId: number): Promise<void> {
     try {
       await this.http.delete<ResponseDto<Category>>(
-        `${environment.BASE_URL}/food/order/category${categoryId}`
+        `${environment.BASE_URL}/api/restaurant${categoryId}`
       ).toPromise();
 
 
@@ -55,7 +55,7 @@ export class CategoryService {
   async saveCategory(categoryData: any): Promise<Category | null> {
     try {
       const observable = this.http.post<ResponseDto<Category>>(
-        environment.BASE_URL + '/food/order/category',
+        environment.BASE_URL + '/api/restaurant/category',
         categoryData
       );
       const response = await firstValueFrom(observable);
@@ -72,7 +72,7 @@ export class CategoryService {
     try {
       const res: any = await firstValueFrom(
         this.http.get<ResponseDto<Category>>(
-          `${environment.BASE_URL}/food/order/id/${categoryId}`
+          `${environment.BASE_URL}/api/restaurant${categoryId}`
         )
       );
       const  category : Category = res.responseData;
@@ -92,7 +92,7 @@ export class CategoryService {
     try {
       const res: any = await firstValueFrom(
         this.http.put<ResponseDto<Category>>(
-          environment.BASE_URL + '/category/' + categoryId, data)
+          environment.BASE_URL + '/api/restaurant' + categoryId, data)
       );
 
       this.state.currentCategory = res.responseData;

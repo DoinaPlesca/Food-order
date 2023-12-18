@@ -7,7 +7,7 @@ public class CreateCategoryRequest
 {
     [NotNull]
     [Required]
-    [StringLength(255, MinimumLength = 1)]
+    [StringLength(255, MinimumLength = 4)]
     public string CategoryName { get; set; }
 
     [Url]

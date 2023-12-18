@@ -34,7 +34,7 @@ public class UserController : ControllerBase
 
     
     [HttpGet]
-    [Route("/api/all/users")]
+    [Route("/api/restaurant/users")]
     public IActionResult GetAllUsers()
     {
         return Ok(_responseHelper.Success(
@@ -47,7 +47,7 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [ValidateModel]
-    [Route("api/register/user")]
+    [Route("/api/restaurant/register")]
     public IActionResult RegisterUser([FromBody] RegistrationRequest request)
     {
         try
@@ -73,7 +73,7 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [ValidateModel]
-    [Route("/api/login")]
+    [Route("/api/restaurant/login")]
     public IActionResult Login([FromBody] AuthenticationRequest dto)
     {
         try
@@ -97,7 +97,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [Route("/api/role")]
+    [Route("/api/restaurant/role")]
     public IActionResult GetUsersByRole(string role)
     {
         try

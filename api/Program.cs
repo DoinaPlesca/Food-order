@@ -82,7 +82,7 @@ app.UseSpaStaticFiles(new StaticFileOptions()
 });
 
 app.Map("/frontend",
-    (IApplicationBuilder frontendApp) => { frontendApp.UseSpa(spa => { spa.Options.SourcePath = "./app/www/"; }); });
+    (IApplicationBuilder frontendApp) => { frontendApp.UseSpa(spa => { spa.Options.SourcePath = "./frontend/www/"; }); });
 
 
 app.UseSpaStaticFiles();

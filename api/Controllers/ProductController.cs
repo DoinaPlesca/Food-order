@@ -26,7 +26,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    [Route("/food/order/product")]
+    [Route("/api/restaurant/product")]
     public IActionResult GetAllProducts()
     {
         return Ok(_responseHelper.Success(
@@ -38,7 +38,7 @@ public class ProductController : ControllerBase
 
     [HttpPost]
     [ValidateModel]
-    [Route("/food/order/new/product")]
+    [Route("/api/restaurant/new/product")]
     public IActionResult CreateProduct([FromBody] CreateProductRequest dto)
     {
         try
@@ -71,7 +71,7 @@ public class ProductController : ControllerBase
 
     
     [HttpGet]
-    [Route("/food/order/{id}")]
+    [Route("/api/restaurant/productId/{id}")]
     public IActionResult GetProductById([FromRoute] int id)
     {
         var product = _productService.GetProductById(id);
@@ -97,7 +97,7 @@ public class ProductController : ControllerBase
     
     [HttpPut]
     [ValidateModel]
-    [Route("/food/order/update/{id}")]
+    [Route("/api/restaurant/product{id}")]
     
     public ResponseDto UpdateProductById([FromRoute] int id,
         [FromBody] UpdateProductRequest dto)
@@ -115,7 +115,7 @@ public class ProductController : ControllerBase
     
     
     [HttpGet]
-    [Route("category/{categoryId}")]
+    [Route("/api/restaurant/{categoryId}")]
     public ActionResult<IEnumerable<ProductFeedQuery>> GetProductsByCategory([FromRoute] int categoryId, [FromServices] NpgsqlDataSource dataSource)
     {
         try
@@ -165,7 +165,7 @@ public class ProductController : ControllerBase
     
     
     [HttpDelete]
-    [Route("food/order/{id}")]
+    [Route("/api/restaurant/{id}")]
     public IActionResult DeleteProduct([FromRoute] int id)
     {
         try
@@ -195,7 +195,7 @@ public class ProductController : ControllerBase
     
     
     [HttpPost]
-    [Route("/food/order/{productId}/category/{categoryId}")]
+    [Route("/api/restaurant/product/{productId}/category/{categoryId}")]
     public IActionResult AddProductToCategory([FromRoute] int productId, [FromRoute] int categoryId)
     {
         try

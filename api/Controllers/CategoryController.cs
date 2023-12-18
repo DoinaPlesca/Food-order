@@ -22,7 +22,7 @@ public class CategoryController : ControllerBase
     }
     
     [HttpGet]
-    [Route("/food/order/category")]
+    [Route("/api/restaurant/category")]
     public IActionResult GetAllCategories()
     {
         return Ok(_responseHelper.Success(
@@ -33,7 +33,7 @@ public class CategoryController : ControllerBase
     }
     [HttpPost]
     [ValidateModel]
-    [Route("/food/order/category")]
+    [Route("/api/restaurant/category")]
     public IActionResult CreateCategory([FromBody] CreateCategoryRequest request)
     {
         try
@@ -65,7 +65,7 @@ public class CategoryController : ControllerBase
     
     [HttpPut]
     [ValidateModel]
-    [Route("/category/{categoryId}")]
+    [Route("/api/restaurant{categoryId}")]
     public ResponseDto UpdateCategoryById([FromRoute] int categoryId, 
         [FromBody] UpdateCategoryRequest dto)
     {
@@ -79,7 +79,7 @@ public class CategoryController : ControllerBase
     
     
     [HttpDelete]
-    [Route("food/order/category{categoryId}")]
+    [Route("/api/restaurant{categoryId}")]
     public IActionResult DeleteCategory([FromRoute] int categoryId)
     {
         try
@@ -105,7 +105,7 @@ public class CategoryController : ControllerBase
     }
  
     [HttpGet]
-    [Route("/food/order/id/{categoryId}")]
+    [Route("/api/restaurant{categoryId}")]
     public IActionResult GetCategoryById([FromRoute] int categoryId)
     {
         var category = _categoryService.GetCategoryById(categoryId);
