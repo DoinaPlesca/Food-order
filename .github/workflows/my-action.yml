@@ -22,8 +22,8 @@ jobs:
           dotnet-version: 7.0.x # version of .NET to use
       - uses: actions/setup-node@v3 # setup node
         with:
-          node-version: 17.x.x # version of node to use
-
+          node-version: 18.x
+      
       - name: Install Angular program dependencies, Angular global CLI + ng build
         run: cd frontend && npm i -g @angular/cli && npm i && ng build
 
