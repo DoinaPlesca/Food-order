@@ -29,7 +29,8 @@ jobs:
 
       - name: Build test code and install playwright test browser
         run: cd test && dotnet build && pwsh bin/Debug/net7.0/playwright.ps1 install --with-deps # By using --with-deps, you ensure that the entire Playwright environment, including its dependencies, is set up correctly on your system.
-
+        if: ${{ success() }}
+        
       - name: Build and run Web API + getting process ID for shutting down later
         run: cd api && dotnet run & echo "API_PID=$!" >> $GITHUB_ENV
         env:
