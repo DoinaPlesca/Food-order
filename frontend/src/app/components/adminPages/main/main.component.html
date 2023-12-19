@@ -20,11 +20,12 @@
           <img src="/assets/images/burger.png" alt="FoodIcons" class="card1-icon">
           <h4 class="text-c-blue f-w-600">Categories</h4>
 
-          <button class="round-button">
-            <a class="nav-link" href="create-category.html">
+          <button class="round-button" (click)="openCategoryModal()" data-testid="openCategoryModalButton">
+            <a class="nav-link">
               <i class="fas fa-plus"></i>
             </a>
           </button>
+
         </div>
       </div>
     </div>
@@ -37,12 +38,11 @@
           <h4 class="text-c-blue f-w-600">Products</h4>
 
 
-          <button class="round-button">
-            <a class="nav-link" href="create-new-product.html">
+          <button class="round-button" (click)="openModal()">
+            <a class="nav-link" >
               <i class="fas fa-plus"></i>
             </a>
           </button>
-
 
         </div>
       </div>
@@ -103,11 +103,11 @@
               </ng-container>
 
 
-              <td *ngIf="displayType === 'categories' || displayType === 'products'" >
-                <button (click)="onDeleteItemClick(item)" class="delete-button">
+              <td *ngIf="displayType === 'categories' || displayType === 'products'" data-testid="table-row">
+                <button (click)="onDeleteItemClick(item)" class="delete-button" data-testid="delete-box-action">
                   Delete
                 </button>
-                <button (click)="onEditItemClick(item)" class="edit-button">
+                <button (click)="onEditItemClick(item)" class="edit-button" data-testid="edit-box-action">
                   Edit
                 </button>
 

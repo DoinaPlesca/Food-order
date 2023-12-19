@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit{
   async login() {
     try {
       const observable = this.http.post<ResponseDto<User>>
-      (environment.BASE_URL + '/api/login', this.loginForm.getRawValue())
+      (environment.BASE_URL + '/api/restaurant/login', this.loginForm.getRawValue())
 
       const response = await firstValueFrom(observable);
 

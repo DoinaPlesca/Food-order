@@ -3,13 +3,13 @@
 
 <body class="sub_page">
 <ng-container *ngIf="openCategoryModal">
-  <div class="modal-overlay" (click)="cancel()"></div>
+  <div class="modal-overlay" data-testid="modal-overlay" (click)="cancel()"></div>
   <div class="modal-container">
 
     <div class="modal-header">
-      <button (click)="cancel()">Cancel</button>
+      <button data-testid="cancel-button" (click)="cancel()">Cancel</button>
       <h2> Create Category</h2>
-      <button (click)="saveCategory()">Save</button>
+      <button data-testid="save-button" (click)="saveCategory()">Save</button>
     </div>
 
     <div class="modal-content">
@@ -19,13 +19,14 @@
           <input id="categoryName"
                  formControlName="categoryName"
                  type="text"
-                 aria-label="Category name" />
+                 aria-label="Category name"
+                 data-testid="categoryName-input" />
 
           <div *ngIf="this.categoryForm?.controls?.categoryName?.touched && this.categoryForm?.controls?.categoryName?.invalid">
-            <div  *ngIf="this.categoryForm?.controls?.categoryName?.errors?.['required']"style="color: red; font-size: 12px;">
+            <div *ngIf="this.categoryForm?.controls?.categoryName?.errors?.['required']" style="color: red; font-size: 12px;" data-testid="categoryName-error">
               <span>Name is required.</span>
             </div>
-            <div *ngIf="this.categoryForm?.controls?.categoryName?.errors?.['minlength']"style="color: red; font-size: 12px;">
+            <div *ngIf="this.categoryForm?.controls?.categoryName?.errors?.['minlength']" style="color: red; font-size: 12px;" data-testid="categoryName-minlength-error">
               <span>Name should be min 5 chars long.</span>
             </div>
           </div>
@@ -33,17 +34,17 @@
 
         <div class="form-group">
           <label for="categoryImageUrl">Image URL</label>
-          <input id="categoryImageUrl" formControlName="categoryImageUrl" />
+          <input id="categoryImageUrl" formControlName="categoryImageUrl" data-testid="categoryImageUrl-input" />
 
           <img *ngIf="categoryForm.get('categoryImageUrl')?.value" [src]="categoryForm.get('categoryImageUrl')?.value" alt="Category Image" />
         </div>
-
 
       </form>
     </div>
   </div>
 </ng-container>
-
 </body>
+
+
 </html>
 

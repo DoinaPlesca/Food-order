@@ -33,7 +33,7 @@ public class UserRepository
             };
 
             string sql = @"
-            INSERT INTO food_order.""User"" (username,email,password,salt,algorithm,role)
+            INSERT INTO food_order.user_table (username,email,password,salt,algorithm,role)
             VALUES (@username , @email, @password, @salt, @algorithm, @role)
             RETURNING id,username,email,password,salt,algorithm, role";
 
@@ -55,7 +55,7 @@ public class UserRepository
     public User GetUserByUsernameOrEmail(string usernameOrEmail,string role)
     {
         string sql = @"SELECT id, username, email, password, salt, algorithm, role 
-                   FROM food_order.""User"" 
+                   FROM food_order.user_table
                    WHERE (username = @UsernameOrEmail OR email = @UsernameOrEmail)
                      AND role = @Role";
 
@@ -69,7 +69,7 @@ public class UserRepository
     public IEnumerable<UserFeedQuery> GetAllUsers()
     {
         string sql = $@"
-        SELECT * FROM food_order.""User""
+        SELECT * FROM food_order.user_table
         ";
         using var conn = _dataSource.OpenConnection();
         return conn.Query<UserFeedQuery>(sql);
@@ -77,7 +77,8 @@ public class UserRepository
     
     public IEnumerable<User> GetUsersByRole(string role)
     {
-        string sql = $"SELECT id, username, email, password, salt, algorithm, role FROM food_order.\"User\" WHERE role = @Role";
+        string sql = $"SELECT id, username, email, password, salt, algorithm, role " +
+                     $"FROM food_order.user_table WHERE role = @Role";
     
         using var conn = _dataSource.OpenConnection();
         var users = conn.Query<User>(sql, new { Role = role });

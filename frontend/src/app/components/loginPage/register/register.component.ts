@@ -34,7 +34,7 @@ function emailDomainValidator(control: AbstractControl): { [key: string]: any } 
 export class RegisterComponent implements  OnInit{
   openRegisterModal: boolean = false;
   users: User[] = [];
-  roles = ['User', 'Admin'];
+  roles = ['user', 'admin'];
 
   registerForm = this.fb.group({
     username: ['', [Validators.required, Validators.minLength(3)]],
@@ -67,7 +67,7 @@ export class RegisterComponent implements  OnInit{
     if (this.registerForm.valid) {
       try {
         const observable = this.http.post<ResponseDto<User>>(
-          `${environment.BASE_URL}/api/register/user`,
+          `${environment.BASE_URL}/api/restaurant/register`,
           this.registerForm.getRawValue()
         );
 
@@ -75,11 +75,12 @@ export class RegisterComponent implements  OnInit{
 
         if (response && response.responseData) {
           this.state.users.push(response.responseData);
-
-          this.errorService.showSuccessMessage('User registered successfully');
         }
 
+
         this.cancel();
+        this.errorService.showSuccessMessage('\n' +
+          'You have successfully registered, please log in!');
 
       } catch (error) {
         if (error instanceof HttpErrorResponse) {

@@ -16,6 +16,7 @@ public class ProductRepository
     }
 
 
+  
     public IEnumerable<ProductFeedQuery> GetAllProducts()
     {
         string sql = $@"
@@ -29,7 +30,7 @@ public class ProductRepository
            category_id AS {nameof(ProductFeedQuery.CategoryId)}
     
      
-       FROM food_order.""Product""";
+       FROM food_order.product";
         using var conn = _dataSource.OpenConnection();
         return conn.Query<ProductFeedQuery>(sql);
     }
@@ -51,7 +52,7 @@ public class ProductRepository
         };
 
         string sql = @"
-        INSERT INTO food_order.""Product"" (name, description, price, quantity, image_url, category_id)
+        INSERT INTO food_order.product (name, description, price, quantity, image_url, category_id)
         VALUES (@Name, @Description, @Price, @Quantity, @ImageUrl, @CategoryId)
         RETURNING id AS ProductId,name,description,price,quantity, image_url As ImageUrl, category_id As CategoryId";
 
@@ -72,7 +73,7 @@ public class ProductRepository
             quantity AS Quantity,
             image_url AS ImageUrl,
             category_id AS CategoryId
-        FROM food_order.""Product"" 
+        FROM food_order.product
         WHERE id = @ProductId";
 
         using var conn = _dataSource.OpenConnection();
@@ -92,7 +93,7 @@ public class ProductRepository
             }
 
             var sql = $@"
-                UPDATE food_order.""Product""
+                UPDATE food_order.product
                 SET
                     name = @name,
                     description = @description,
@@ -135,8 +136,8 @@ public class ProductRepository
             p.quantity AS {nameof(ProductFeedQuery.Quantity)},
             p.image_url AS {nameof(ProductFeedQuery.ImageUrl)},
             p.category_id AS {nameof(ProductFeedQuery.CategoryId)}
-        FROM food_order.""Product"" p
-        JOIN food_order.""Category"" c ON p.category_id = c.categoryid
+        FROM food_order.product p
+        JOIN food_order.category c ON p.category_id = c.categoryid
         WHERE c.categoryid = @CategoryId";
 
         using var conn = _dataSource.OpenConnection();
@@ -145,7 +146,7 @@ public class ProductRepository
 
     public bool CategoryExists(IDbConnection connection, int categoryId)
     {
-        var sql = "SELECT COUNT(*) FROM food_order.\"Category\" WHERE categoryid = @categoryId";
+        var sql = "SELECT COUNT(*) FROM food_order.category WHERE categoryid = @categoryId";
         return connection.ExecuteScalar<int>(sql, new { categoryId }) > 0;
         
         // update:execute a query and return the result of the first
@@ -157,7 +158,7 @@ public class ProductRepository
     public bool DeleteProduct(int id)
     {
         var sql = @"
-        DELETE FROM food_order.""Product""
+        DELETE FROM food_order.product
         WHERE id = @id;
     ";
         using (var conn = _dataSource.OpenConnection())
@@ -170,7 +171,7 @@ public class ProductRepository
     public void AddProductToCategory(int productId, int categoryId)
     {
         string sql = @"
-        UPDATE food_order.""Product""
+        UPDATE food_order.product
         SET category_id = @CategoryId
         WHERE id = @ProductId";
     

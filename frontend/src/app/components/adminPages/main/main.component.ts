@@ -137,7 +137,7 @@ export class MainComponent implements OnInit {
   }
 
 
-  openModal(): void {
+   openModal(): void {
     const dialogRef = this.dialog.open(CreateNewProductComponent, {});
     dialogRef.afterClosed().subscribe(result => {
     });
