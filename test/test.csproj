@@ -26,9 +26,4 @@
         <ProjectReference Include="..\infrastructure\infrastructure.csproj" />
     </ItemGroup>
 
-
-    <ItemGroup>
-      <Compile Include="obj\CreateCategory.cs" />
-    </ItemGroup>
-
 </Project>
