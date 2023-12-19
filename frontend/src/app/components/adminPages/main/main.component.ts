@@ -8,7 +8,7 @@ import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.s
 import {MatDialog, MatDialogConfig, MatDialogModule} from "@angular/material/dialog";
 import { CreateNewProductComponent } from '../create-new-product/create-new-product.component';
 import { CreateCategoryComponent } from '../create-category/create-category.component';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router } from '@angular/router';
 import {animate, state, style, transition, trigger } from '@angular/animations';
 import { EditProductComponent } from '../edit-product/edit-product.component';
 import { EditCategoryComponent } from '../edit-category/edit-category.component';
@@ -32,8 +32,11 @@ export class MainComponent implements OnInit {
     private dialog:MatDialog,
     private router :Router,
     private errorService: ErrorService,
+    private route: ActivatedRoute
+  ) {
+  }
 
-  ) {}
+
 
 
   ngOnInit(): void {

@@ -5,7 +5,7 @@ using infrastructure.DataModels;
 
 namespace test;
 
-
+[TestFixture]
 public class DeleteTests : PageTest
 {
     [TestCase("Test delete", "https://www.unfade.dk/wp-content/uploads/2022/12/Mystery-Box-Sprayer_All_5039_5.jpeg")]

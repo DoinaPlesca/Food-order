@@ -43,6 +43,7 @@ export class CreateNewProductComponent implements OnInit {
     private state: State,
     private router: Router,
     private errorService: ErrorService,
+    public dialogRef: MatDialogRef<CreateNewProductComponent>
 
   ) {}
 
@@ -99,7 +100,9 @@ export class CreateNewProductComponent implements OnInit {
   cancel() {
     this.resetForm();
     this.openModal = false;
-    this.router.navigate(['/main.html']);
+    this.dialogRef.close();
+    this.router.navigate(['/main']);
+
   }
 
 

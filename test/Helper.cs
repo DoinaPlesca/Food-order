@@ -88,23 +88,6 @@ Best regards, Alex.
         }
     }
 
-    /*
-    public static CreateProductRequest CreateProductRequest(string name, string description, decimal price,
-        int quantity,string imageUrl, int categoryId)
-    {
-        return new CreateProductRequest()
-        {
-            Name = name,
-            Description = description,
-            Price = price,
-            Quantity = quantity,
-            ImageUrl = imageUrl,
-            CategoryId = categoryId
-        }
-    }
-    */
-    
-    
     
     
     

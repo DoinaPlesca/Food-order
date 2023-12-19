@@ -25,7 +25,7 @@ export class ProductService {
   async getAllProducts(): Promise<Product[]> {
     try {
       const res: any = await firstValueFrom(
-        this.http.get<ResponseDto<Product[]>>(`${environment.BASE_URL}/api/restaurant/product`)
+        this.http.get<ResponseDto<Product[]>>(`${environment.BASE_URL}/api/restaurant/products`)
       );
       this.state.setProducts(res.responseData);
       return res.responseData;

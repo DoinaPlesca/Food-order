@@ -80,11 +80,11 @@ export class LoginComponent implements OnInit{
 
 
   private navigateToAdmin() {
-    this.router.navigate(['/main.html']);
+    this.router.navigate(['/main']);
   }
 
   private navigateToUser() {
-    this.router.navigate(['/home.html']);
+    this.router.navigate(['/home']);
   }
   register(){
     const dialogRef = this.dialog.open(RegisterComponent, {});

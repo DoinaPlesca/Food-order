@@ -1,5 +1,5 @@
 import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
+import {PreloadAllModules, RouterModule, Routes } from "@angular/router";
 import {HomeComponent} from "./components/userPages/home/home.component";
 import {MenuComponent} from "./components/userPages/menu/menu.component";
 import {AboutComponent} from "./components/userPages/about/about.component";
@@ -17,24 +17,24 @@ import { CartComponent } from "./components/userPages/cart/cart.component";
 
 const routes: Routes = [
   {path: '', component : LoginComponent},
-  {path: 'register.html', component : RegisterComponent},
-  {path: 'home.html', component : HomeComponent},
-  {path: 'menu.html' , component: MenuComponent},
-  {path: 'about.html' , component: AboutComponent},
-  {path: 'reservation.html' , component: ReservationComponent},
-  {path: 'main.html', component: MainComponent},
-  {path: 'create-new-product.html', component: CreateNewProductComponent},
-  {path: 'create-category.html' , component: CreateCategoryComponent},
+  {path: 'register', component : RegisterComponent},
+  {path: 'home', component : HomeComponent},
+  {path: 'menu', component: MenuComponent},
+  {path: 'about' , component: AboutComponent},
+  {path: 'reservation' , component: ReservationComponent},
+  {path: 'main', component: MainComponent},
+  {path: 'create-new-product', component: CreateNewProductComponent},
+  {path: 'create-category' , component: CreateCategoryComponent},
   {path: 'edit-product/:id', component: EditProductComponent},
   {path: 'edit-category/:id', component: EditCategoryComponent},
-  {path: 'cart.html', component: CartComponent},
+  {path: 'cart', component: CartComponent},
 
 
 
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

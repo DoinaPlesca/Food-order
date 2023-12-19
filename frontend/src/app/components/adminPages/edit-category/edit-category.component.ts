@@ -32,6 +32,7 @@ export class EditCategoryComponent implements OnInit {
 
 
 
+
   ) {
     this.categoryForm = this.fb.group({
       categoryName: ['', [Validators.required, Validators.minLength(5)]],
@@ -104,8 +105,9 @@ export class EditCategoryComponent implements OnInit {
   cancel() {
     this.resetForm();
     this.openEditCategoryModal = false;
-    //this.sharedService.loadAllCategories();
-    this.router.navigate(['/main.html']);
+    this.sharedService.loadAllCategories();
+    this.router.navigate(['/main']);
+
 
 
   }

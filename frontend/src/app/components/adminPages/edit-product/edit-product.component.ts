@@ -114,7 +114,7 @@ export class EditProductComponent implements OnInit {
     this.resetForm();
     this.openEditProductModal = false;
     this.sharedService.loadAllProducts();
-    this.router.navigate(['/main.html']);
+    this.router.navigate(['/main']);
 
 
  }

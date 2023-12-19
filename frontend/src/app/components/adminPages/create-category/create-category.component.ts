@@ -38,6 +38,9 @@ export class CreateCategoryComponent implements OnInit{
     public router: Router,
     private errorService: ErrorService,
     private categoryService: CategoryService,
+    public dialogRef: MatDialogRef<CreateCategoryComponent>,
+
+
 
 
   ) {}
@@ -73,7 +76,9 @@ export class CreateCategoryComponent implements OnInit{
   cancel() {
     this.categoryForm.reset();
     this.openCategoryModal = false;
-    this.router.navigate(['/main.html']);
+    this.dialogRef.close();
+    this.router.navigate(['/main']);
+
   }
 
 

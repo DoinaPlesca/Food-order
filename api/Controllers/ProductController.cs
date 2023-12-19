@@ -26,7 +26,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    [Route("/api/restaurant/product")]
+    [Route("/api/restaurant/products")]
     public IActionResult GetAllProducts()
     {
         return Ok(_responseHelper.Success(
