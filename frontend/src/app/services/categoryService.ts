@@ -3,11 +3,8 @@ import { Injectable } from "@angular/core";
 import {State} from "./state";
 import {Category} from "../models/category";
 import {firstValueFrom} from "rxjs";
-import {ResponseDto} from "../models/responsiveHelper/responseDto";
 import {environment} from "../environments/environment";
 import { ErrorService } from "./errorService";
-import {ToastrService} from "ngx-toastr";
-import {extractRoutes} from "@angular-devkit/build-angular/src/utils/routes-extractor/extractor";
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +21,7 @@ export class CategoryService {
   async getAllCategories(): Promise<Category[]> {
     try {
       const res: any = await firstValueFrom(
-          this.http.get<ResponseDto<Category[]>>(`${environment.BASE_URL}/api/restaurant/category`)
+          this.http.get<any>(`${environment.BASE_URL}/category`)
       );
 
       this.state.setCategories(res.responseData);
@@ -38,8 +35,8 @@ export class CategoryService {
 
   async deleteCategoryById(categoryId: number): Promise<void> {
     try {
-      await this.http.delete<ResponseDto<Category>>(
-        `${environment.BASE_URL}/api/restaurant${categoryId}`
+      await this.http.delete<any>(
+        `${environment.BASE_URL}${categoryId}`
       ).toPromise();
 
 
@@ -54,8 +51,8 @@ export class CategoryService {
 
   async saveCategory(categoryData: any): Promise<Category | null> {
     try {
-      const observable = this.http.post<ResponseDto<Category>>(
-        environment.BASE_URL + '/api/restaurant/category',
+      const observable = this.http.post<any>(
+        environment.BASE_URL + '/category',
         categoryData
       );
       const response = await firstValueFrom(observable);
@@ -71,8 +68,8 @@ export class CategoryService {
   async getCategoryById(categoryId: number): Promise<Category> {
     try {
       const res: any = await firstValueFrom(
-        this.http.get<ResponseDto<Category>>(
-          `${environment.BASE_URL}/api/restaurant${categoryId}`
+        this.http.get<any>(
+          `${environment.BASE_URL}${categoryId}`
         )
       );
       const  category : Category = res.responseData;
@@ -91,8 +88,8 @@ export class CategoryService {
   async updateCategoryById(categoryId: number, data: any) : Promise<void> {
     try {
       const res: any = await firstValueFrom(
-        this.http.put<ResponseDto<Category>>(
-          environment.BASE_URL + '/api/restaurant' + categoryId, data)
+        this.http.put<any>(
+          environment.BASE_URL + categoryId, data)
       );
 
       this.state.currentCategory = res.responseData;

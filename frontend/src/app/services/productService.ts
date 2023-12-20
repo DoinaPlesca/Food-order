@@ -25,7 +25,7 @@ export class ProductService {
   async getAllProducts(): Promise<Product[]> {
     try {
       const res: any = await firstValueFrom(
-        this.http.get<ResponseDto<Product[]>>(`${environment.BASE_URL}/api/restaurant/products`)
+        this.http.get<any>(`${environment.BASE_URL}/products`)
       );
       this.state.setProducts(res.responseData);
       return res.responseData;
@@ -37,8 +37,8 @@ export class ProductService {
 
   async deleteProductById(productId: number): Promise<void> {
     try {
-      await this.http.delete<ResponseDto<Product>>(
-        `${environment.BASE_URL}/api/restaurant/${productId}`
+      await this.http.delete<any>(
+        `${environment.BASE_URL}/${productId}`
       ).toPromise();
 
       const updatedProducts = this.state.getProducts().filter(product => product.productId !== productId);
@@ -54,8 +54,8 @@ export class ProductService {
 
   async saveProduct(productData: any): Promise<Product | null> {
     try {
-      const observable = this.http.post<ResponseDto<Product>>(
-        environment.BASE_URL + '/api/restaurant/new/product',
+      const observable = this.http.post<any>(
+        environment.BASE_URL + '/new/product',
         productData
       );
       const response = await firstValueFrom(observable);
@@ -71,8 +71,8 @@ export class ProductService {
   async getProductById(productId: number): Promise<Product> {
     try {
       const res: any = await firstValueFrom(
-        this.http.get<ResponseDto<Product>>(
-          `${environment.BASE_URL}/api/restaurant/productId/${productId}`)
+        this.http.get<any>(
+          `${environment.BASE_URL}/productId/${productId}`)
       );
       const product: Product = res.responseData;
       this.state.currentProduct = product;
@@ -88,7 +88,7 @@ export class ProductService {
   async updateProductById(id: number, data: any) : Promise<void> {
     try {
       const res: any = await firstValueFrom(
-        this.http.put<ResponseDto<Product>>(environment.BASE_URL + '/api/restaurant/product' + id, data)
+        this.http.put<any>(environment.BASE_URL + '/product' + id, data)
       );
       this.state.currentProduct = res.responseData;
 
@@ -103,7 +103,7 @@ export class ProductService {
  async getAllProductsForSelectedCategory(categoryId: number): Promise<Product[]> {
     try {
       const res: any = await firstValueFrom(
-        this.http.get<ResponseDto<Product[]>>(`${environment.BASE_URL}/api/restaurant/${categoryId}/product`)
+        this.http.get<any>(`${environment.BASE_URL}/${categoryId}/product`)
       );
 
       this.state.setProducts(res.responseData);

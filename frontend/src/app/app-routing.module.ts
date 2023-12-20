@@ -16,7 +16,7 @@ import { CartComponent } from "./components/userPages/cart/cart.component";
 
 
 const routes: Routes = [
-  {path: '', component : LoginComponent},
+  {path: '',  component : LoginComponent},
   {path: 'register', component : RegisterComponent},
   {path: 'home', component : HomeComponent},
   {path: 'menu', component: MenuComponent},

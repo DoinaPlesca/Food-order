@@ -2,12 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {AbstractControl, FormBuilder, Validators} from "@angular/forms";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Router} from "@angular/router";
-import {ToastrService} from "ngx-toastr";
+
 import { State } from 'src/app/services/state';
 import { ErrorService } from 'src/app/services/errorService';
 import { User } from 'src/app/models/user';
 import {MatSnackBar} from "@angular/material/snack-bar";
-import { ResponseDto } from 'src/app/models/responsiveHelper/responseDto';
 import { environment } from 'src/app/environments/environment';
 import { firstValueFrom } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -66,8 +65,8 @@ export class RegisterComponent implements  OnInit{
   async register() {
     if (this.registerForm.valid) {
       try {
-        const observable = this.http.post<ResponseDto<User>>(
-          `${environment.BASE_URL}/api/restaurant/register`,
+        const observable = this.http.post<any>(
+          `${environment.BASE_URL}/register`,
           this.registerForm.getRawValue()
         );
 

@@ -38,7 +38,6 @@ builder.Services.AddCors();
 
 //SETUP OTHER SERVICES
 builder.Services.AddControllers();
-builder.Services.AddSpaStaticFiles(configuration => { configuration.RootPath = "./../frontend/www/"; });
 
 if (builder.Environment.IsDevelopment())
 {
@@ -56,27 +55,12 @@ app.UseCors(options =>
         .AllowCredentials();
 });
 
-app.UseSpaStaticFiles(new StaticFileOptions()
-{
-    OnPrepareResponse = ctx =>
-    {
-        const int durationInSeconds = 60 * 60 * 24;
-        ctx.Context.Response.Headers[HeaderNames.CacheControl] =
-            "public,max-age=" + durationInSeconds;
-    }
-});
-
-app.Map("/frontend",
-    (IApplicationBuilder frontendApp) => { frontendApp.UseSpa(spa => { spa.Options.SourcePath = "./frontend/www/"; }); });
-
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-
 
 app.MapControllers();
 app.UseMiddleware<GlobalExceptionHandler>();
