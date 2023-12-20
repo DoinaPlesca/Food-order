@@ -7,10 +7,12 @@ using service;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//SETUP 
+
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddNpgsqlDataSource(Utilities.ProperlyFormattedConnectionString,
-        dataSourceBuilder => dataSourceBuilder.EnableParameterLogging());
+        dataSourceBuilder => dataSourceBuilder.EnableParameterLogging()); 
 }
 
 if (builder.Environment.IsProduction())
@@ -18,51 +20,34 @@ if (builder.Environment.IsProduction())
     builder.Services.AddNpgsqlDataSource(Utilities.ProperlyFormattedConnectionString);
 }
 
+//SETUP REPOSITORIES
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
 builder.Services.AddSingleton<CategoryRepository>();
-builder.Services.AddSingleton<CategoryService>();
-
-
 builder.Services.AddSingleton<ProductRepository>();
+builder.Services.AddSingleton<UserRepository>();
+
+//NON-API SERVICES
+builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<ResponseHelper>();
-
-builder.Services.AddSingleton<UserRepository>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<PasswordHasher ,BCryptHashAlgorithm>();
 
+//MIDDLEWARE
+builder.Services.AddCors();
 
-
+//SETUP OTHER SERVICES
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-
-var frontEndRelativePath = "./../frontend/www/";
-
 builder.Services.AddSpaStaticFiles(configuration => { configuration.RootPath = "./../frontend/www/"; });
 
-builder.Services.AddCors(options =>
+if (builder.Environment.IsDevelopment())
 {
-    options.AddPolicy("AllowOrigin",
-        builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
-});
- 
+    //FOR SWAGGER / OPENAPI IN DEV MODE
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+}
+
 var app = builder.Build();
-
-app.UseRouting();
-
-app.UseCors("AllowOrigin");
-
-
-// Configure the HTTP request pipeline.
-app.UseSwagger();
-app.UseSwaggerUI();
-
 app.UseCors(options =>
 {
     options.SetIsOriginAllowed(origin => true)
@@ -82,18 +67,17 @@ app.UseSpaStaticFiles(new StaticFileOptions()
 });
 
 app.Map("/frontend",
-    (IApplicationBuilder frontendApp) => { frontendApp.UseSpa(spa => { spa.Options.SourcePath = "./app/www/"; }); });
+    (IApplicationBuilder frontendApp) => { frontendApp.UseSpa(spa => { spa.Options.SourcePath = "./frontend/www/"; }); });
 
 
-app.UseSpaStaticFiles();
-app.UseSpa(conf =>
+if (app.Environment.IsDevelopment())
 {
-    conf.Options.SourcePath = frontEndRelativePath;
-});
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.UseMiddleware<GlobalExceptionHandler>();
+
 
 app.MapControllers();
-
-
+app.UseMiddleware<GlobalExceptionHandler>();
 app.Run();
