@@ -16,7 +16,7 @@ public class ProductRepository
     }
 
 
-  
+    
     public IEnumerable<ProductFeedQuery> GetAllProducts()
     {
         string sql = $@"

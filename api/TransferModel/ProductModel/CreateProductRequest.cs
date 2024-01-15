@@ -25,6 +25,7 @@ public class CreateProductRequest
     [DataType(DataType.Currency)]
     public decimal Price { get; set; }
 
+    
     [Required(ErrorMessage = "Quantity is required")]
     [Range(1, int.MaxValue, ErrorMessage = "Quantity must be a positive number")]
     public int Quantity { get; set; }

@@ -57,8 +57,10 @@ export class LoginComponent implements OnInit{
 
       const response = await firstValueFrom(observable);
 
+      // Update the currentUser with the responseData from the server
       this.currentUser = response.responseData;
 
+      //check succesfuly login
       if (this.currentUser !== undefined) {
         this.state.setCurrentUser(this.currentUser);
 
@@ -70,6 +72,8 @@ export class LoginComponent implements OnInit{
           this.navigateToUser();
         }
         this.errorService.showSuccessMessage('Successfully logged in!');
+        localStorage.setItem('token', response.token);
+
       }
 
     } catch (error) {

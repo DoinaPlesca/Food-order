@@ -1,7 +1,7 @@
 
 import { BrowserModule } from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AppRoutingModule} from "./app-routing.module";
 import {ProductService} from "./services/productService";
 import {HomeComponent} from "./components/userPages/home/home.component";
@@ -30,6 +30,7 @@ import { RouterModule } from '@angular/router';
 import { RegisterComponent } from './components/loginPage/register/register.component';
 import { CartComponent } from './components/userPages/cart/cart.component';
 import { CartService } from './services/cartService';
+import { AuthInterceptor } from './services/AuthInterceptor';
 
 
 @NgModule({
@@ -71,6 +72,11 @@ import { CartService } from './services/cartService';
 
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
     CartService,
     ProductService,
     CategoryService,

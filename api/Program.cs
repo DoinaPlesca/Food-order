@@ -1,13 +1,20 @@
+using api.Filter;
 using api.Helper;
 using api.Middleware;
 using infrastructure;
 using infrastructure.Repository;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Net.Http.Headers;
+using Npgsql;
 using service;
-
+// create instance
 var builder = WebApplication.CreateBuilder(args);
 
-//SETUP 
+//SETUP LOGGER
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
+//SETUP CURRENT hosting Environment
 
 if (builder.Environment.IsDevelopment())
 {
@@ -20,7 +27,7 @@ if (builder.Environment.IsProduction())
     builder.Services.AddNpgsqlDataSource(Utilities.ProperlyFormattedConnectionString);
 }
 
-//SETUP REPOSITORIES
+//SETUP REPOSITORIES. dependency injection
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<CategoryRepository>();
 builder.Services.AddSingleton<ProductRepository>();
@@ -35,6 +42,8 @@ builder.Services.AddSingleton<PasswordHasher ,BCryptHashAlgorithm>();
 
 //MIDDLEWARE
 builder.Services.AddCors();
+builder.Services.AddSpaStaticFiles(configuration => { configuration.RootPath = "./../frontend/www/"; });
+builder.Services.AddScoped<AuthenticationFilter>();
 
 //SETUP OTHER SERVICES
 builder.Services.AddControllers();
@@ -64,4 +73,10 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 app.UseMiddleware<GlobalExceptionHandler>();
+
+
+//Testing if run command has correctly passed arguments
+
+app.Services.GetService<UserService>()!.WarningIfSecretIsNotValid();
+
 app.Run();

@@ -9,9 +9,9 @@ import { User } from "../models/user";
 })
 export class State {
 
-  products: Product[] = [];
+  products: Product[] = []; //i
   categories : Category[] = [];
-  currentProduct: Product | null = null;
+  currentProduct: Product | null = null; //v
   currentCategory:Category | null = null;
   users: User[]= [];
   currentUser: User = {};

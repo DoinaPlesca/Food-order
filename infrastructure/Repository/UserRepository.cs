@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿
+using Dapper;
 using infrastructure.DataModels;
 using infrastructure.QueryModels;
 using Microsoft.Extensions.Logging;
@@ -22,6 +23,11 @@ public class UserRepository
     {
         try
         {
+            if (UserExists(username))
+            {
+                throw new InvalidOperationException("Username already exists");
+            }
+
             var newUser = new User
             {
                 username = username,
@@ -34,8 +40,8 @@ public class UserRepository
 
             string sql = @"
             INSERT INTO food_order.user_table (username,email,password,salt,algorithm,role)
-            VALUES (@username , @email, @password, @salt, @algorithm, @role)
-            RETURNING id,username,email,password,salt,algorithm, role";
+            VALUES (@Username, @Email, @Password, @Salt, @Algorithm, @Role)
+            RETURNING id, username, email, password, salt, algorithm, role";
 
             using var conn = _dataSource.OpenConnection();
             var createdUser = conn.QuerySingle<User>(sql, newUser);
@@ -46,12 +52,43 @@ public class UserRepository
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error occurred while creating a new user");
-            
+
             throw;
+        }
+    }
+    public User GetUserById(int id)
+    {
+        var sql = @"
+        SELECT username, email, password, salt, algorithm, role
+        FROM food_order.user_table 
+        WHERE id = @id;";
+
+        using (var conn = _dataSource.OpenConnection())
+        {
+            return conn.QueryFirst<User>(sql, new { id });
         }
     }
 
 
+    
+    private bool UserExists(string username)
+    {
+        var sql = "SELECT COUNT(*) FROM food_order.user_table WHERE username = @Username";
+        using var conn = _dataSource.OpenConnection();
+        var count = conn.ExecuteScalar<int>(sql, new { Username = username });
+
+        return count > 0;
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
     public User GetUserByUsernameOrEmail(string usernameOrEmail,string role)
     {
         string sql = @"SELECT id, username, email, password, salt, algorithm, role 

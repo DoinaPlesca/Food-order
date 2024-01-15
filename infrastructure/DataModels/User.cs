@@ -9,5 +9,12 @@ public class User
     public string? salt { get; set; }
     
     public string? algorithm { get; set; }
-    public string? role { get; set; }
+   
+    public string role { get; set; }
+    
+    /*public enum Role
+    {
+        User,
+        Admin
+    }*/
 }

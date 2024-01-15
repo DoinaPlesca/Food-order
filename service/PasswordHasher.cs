@@ -9,8 +9,7 @@ public abstract class PasswordHasher
     const string CurrentAlgorithmName = BCryptHashAlgorithm.Name;
 
     public static PasswordHasher Create(string algorithmName = CurrentAlgorithmName)
-    {
-        switch (algorithmName)
+    {switch (algorithmName)
         {
             case BCryptHashAlgorithm.Name:
                 return new BCryptHashAlgorithm();
@@ -18,13 +17,9 @@ public abstract class PasswordHasher
                 throw new NotImplementedException();
         }
     }
-
     public abstract string GetName();
-
     public abstract string HashPassword(string password, string salt);
-
     public abstract bool VerifyHashedPassword(string password, string hash, string salt);
-
     public string GenerateSalt()
     {
         return BCrypt.Net.BCrypt.GenerateSalt(12);
