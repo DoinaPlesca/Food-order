@@ -1,12 +1,18 @@
 ﻿import {ResponseDto} from "./responsiveHelper/responseDto";
-export interface User{
-
-  username?: string,
-  email?: string,
-  password?: string;
-  role?: string;
-
-  usernameOrEmail?: string;
+export enum Role {
+  User = 0,
+  Admin = 1,
 }
 
-export type UserResponseDto = ResponseDto<User>;
+export interface User {
+  username?: string;
+  email?: string;
+  password?: string;
+  role?: Role;
+  usernameOrEmail?: string;
+
+}
+
+export interface UserResponseDto extends ResponseDto<User> {
+
+}

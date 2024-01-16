@@ -5,17 +5,17 @@ namespace api.TransferModel;
 
 public class CreateProductRequest
 {
-    [NotNull]
+  
     [Required]
     [StringLength(100, MinimumLength = 5)]
     public string Name { get; set; }
 
-    [NotNull]
+    
     [Required]
     [StringLength(2000, MinimumLength = 5)]
     public string Description { get; set; }
 
-    [NotNull]
+
     [Required]
     [Url]
     public string ImageUrl { get; set; }

@@ -33,7 +33,7 @@ function emailDomainValidator(control: AbstractControl): { [key: string]: any } 
 export class RegisterComponent implements  OnInit{
   openRegisterModal: boolean = false;
   users: User[] = [];
-  roles = ['user', 'admin'];
+  roles = ['User', 'Admin'];
 
   registerForm = this.fb.group({
     username: ['', [Validators.required, Validators.minLength(3)]],

@@ -1,4 +1,4 @@
-﻿// shared-footer.service.ts
+﻿
 import { Injectable } from '@angular/core';
 
 @Injectable({

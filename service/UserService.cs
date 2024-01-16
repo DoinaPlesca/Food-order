@@ -28,7 +28,7 @@ public class UserService
     }
 
 
-    public User RegisterUser(string username, string email, string password, string role)
+    public User RegisterUser(string username, string email, string password, Role role)
     {
         try
         {
@@ -41,14 +41,18 @@ public class UserService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Exception: {ex.Message}");
-            Console.WriteLine($"StackTrace: {ex.StackTrace}");
+            _logger.LogError(ex, "Error occurred while registering a new user");
             throw;
         }
     }
 
+    public User? GetUserById(SessionData data)
+    {
+        return _userRepository.GetUserById(data.Id);
+    }
 
-    public bool VerifyPassword(string usernameOrEmail, string password,string role)
+
+    public bool VerifyPassword(string usernameOrEmail, string password, Role role)
     {
         try
         {
@@ -56,29 +60,33 @@ public class UserService
 
             if (user == null)
             {
-                Console.WriteLine($"User: {user}");
                 return false;
             }
 
-            bool isPasswordValid = _passwordHasher.VerifyHashedPassword(password, user.password, user.salt);
-            Console.WriteLine($"Password validation result: {isPasswordValid}");
+            bool isPasswordValid = _passwordHasher.VerifyHashedPassword(password, user.Password, user.Salt);
 
             if (!isPasswordValid)
             {
-                Console.WriteLine($"Invalid password for user with username or email: {usernameOrEmail}");
+                _logger.LogInformation("Invalid password for user with username or email: {UsernameOrEmail}", usernameOrEmail);
             }
 
             return isPasswordValid;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error verifying password for username or email: {usernameOrEmail}. Exception: {ex}");
+            _logger.LogError(ex, "Error occurred while verifying password for username or email: {UsernameOrEmail}", usernameOrEmail);
             throw;
         }
     }
 
-    public IEnumerable<User> GetUsersByRole(string role)
+    public User GetUserByUsernameOrEmail(string usernameOrEmail, Role role)
     {
-        return _userRepository.GetUsersByRole(role);
+        return _userRepository.GetUserByUsernameOrEmail(usernameOrEmail, role);
+    }
+
+
+    public IEnumerable<User> GetUsersByRole(Role role)
+    {
+        return _userRepository.GetUsersByRole(role.ToString());
     }
 }

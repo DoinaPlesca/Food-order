@@ -46,7 +46,7 @@ export class ErrorService {
     this.showSnackBar(message, 'Success', position);
   }
 
-  private showSnackBar(message: string, panelClass: string, position?: SnackBarPosition): void {
+  public showSnackBar(message: string, panelClass: string, position?: SnackBarPosition): void {
     this.snackBar.open(message, panelClass, {
       duration: 5000,
       horizontalPosition: position?.horizontal || 'center',
@@ -54,7 +54,7 @@ export class ErrorService {
     });
   }
 
-  private getErrorMessage(error: HttpErrorResponse): string {
+  public getErrorMessage(error: HttpErrorResponse): string {
     switch (error.status) {
       case 400:
         return 'Bad request. Please check your input.';
