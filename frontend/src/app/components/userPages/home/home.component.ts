@@ -5,6 +5,9 @@ import {SharedContentService} from "../../../services/shared/user-Pages.Service/
 import {SharedFooterService} from "../../../services/shared/user-Pages.Service/shared-footer";
 import { SharedProductCategoryService } from 'src/app/services/shared-prod_cat.service';
 import { ErrorService } from 'src/app/services/errorService';
+import {HttpClient} from "@angular/common/http";
+import { environment } from 'src/app/environments/environment';
+import { TokenService } from 'src/app/services/TokenService';
 
 
 
@@ -26,6 +29,8 @@ export class HomeComponent implements OnInit {
     private sharedContentService: SharedContentService,
     private sharedFooterService: SharedFooterService,
     private errorService: ErrorService,
+    private http: HttpClient,
+    private tokenService: TokenService
   ) {}
 
   async ngOnInit() {
@@ -73,6 +78,23 @@ export class HomeComponent implements OnInit {
       console.log('All Products:', this.filteredProducts);
     }
   }
+
+  async logout(): Promise<any> {
+    try {
+      this.tokenService.clearToken();
+      const response = await this.http.post<any>(environment.BASE_URL + '/logout', {}).toPromise();
+      console.log('Logout successful', response);
+      return response;
+    } catch (error) {
+      console.error('Error during logout', error);
+      throw error;
+    }
+  }
+
+
+
+
+
 addToCart(product:any){
 
 }

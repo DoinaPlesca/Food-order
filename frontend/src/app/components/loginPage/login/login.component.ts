@@ -4,7 +4,7 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
 
-import { User } from 'src/app/models/user';
+import {Role, User, UserResponseDto } from 'src/app/models/user';
 import {Observable, firstValueFrom } from 'rxjs';
 import { environment } from 'src/app/environments/environment';
 import { ResponseDto } from 'src/app/models/responsiveHelper/responseDto';
@@ -13,6 +13,7 @@ import { ErrorService } from 'src/app/services/errorService';
 import {MatDialog} from "@angular/material/dialog";
 import { RegisterComponent } from '../register/register.component';
 import {MatSnackBar} from "@angular/material/snack-bar";
+import { TokenService } from 'src/app/services/TokenService';
 
 
 
@@ -21,65 +22,90 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent implements OnInit{
-  openLoginModal: boolean = false;
-  currentUser: User | undefined;
-  roleError: boolean = false;
+export class LoginComponent implements OnInit {
+    openLoginModal: boolean = false;
+    currentUser: User | undefined;
+    roleError: boolean = false;
 
 
-  loginForm = this.fb.group({
-    usernameOrEmail: ['', Validators.required],
-    username:['', Validators.required],
-    email: ['', Validators.required],
-    password: ['', Validators.required],
-    role: ['', Validators.required],
+    loginForm = this.fb.group({
+        usernameOrEmail: ['', Validators.required],
+        username: ['', Validators.required],
+        email: ['', Validators.required],
+        password: ['', Validators.required],
+        role: ['', Validators.required],
 
-  });
+    });
 
-  constructor(
-    private fb: FormBuilder,
-    private http: HttpClient,
-    private state: State,
-    public router: Router,
-    private dialog:MatDialog,
-    private snackBar: MatSnackBar,
-    private errorService: ErrorService
-  ) {}
-
-
-  ngOnInit(): void {
-    this.openLoginModal= true;}
-
-  async login() {
-    try {
-      const observable = this.http.post<any>
-      (environment.BASE_URL + '/login', this.loginForm.getRawValue())
-
-      const response = await firstValueFrom(observable);
-
-      this.currentUser = response.responseData;
-
-      if (this.currentUser !== undefined) {
-        this.state.setCurrentUser(this.currentUser);
-
-        const selectedRole = this.loginForm.get('role')?.value;
-
-        if (selectedRole === 'admin') {
-          this.navigateToAdmin();
-        } else if (selectedRole === 'user') {
-          this.navigateToUser();
-        }
-        this.errorService.showSuccessMessage('Successfully logged in!');
-      }
-
-    } catch (error) {
-      this.errorService.handleHttpError(error);
-      this.errorService.showValidationError('Please fill in all fields correctly!')
+    constructor(
+        private fb: FormBuilder,
+        private http: HttpClient,
+        private state: State,
+        public router: Router,
+        private dialog: MatDialog,
+        private snackBar: MatSnackBar,
+        private errorService: ErrorService,
+        private tokenService: TokenService
+    ) {
     }
-  }
 
 
-  private navigateToAdmin() {
+    ngOnInit(): void {
+        this.openLoginModal = true;
+    }
+
+
+
+    async login() {
+        try {
+            const url = environment.BASE_URL + '/login';
+
+            const response = await firstValueFrom
+            (this.http.post<ResponseDto<{ token: string }>>(url, this.loginForm.value));
+
+            console.log('Full Response:', response);
+
+
+            if (response.messageToClient === 'Login successful' && response.responseData?.token) {
+
+                this.tokenService.setToken(response.responseData!.token);
+                console.log('Token set:', response.responseData!.token);
+
+
+                const decodedToken = this.tokenService.getDecodedToken();
+
+                console.log('Decoded Token:', decodedToken);
+
+                if (decodedToken && decodedToken.role) {
+                    console.log('User Role:', decodedToken.role);
+
+
+                    if (decodedToken.role === 'Admin') {
+                        this.navigateToAdmin();
+
+
+                    } else if (decodedToken.role === 'User') {
+                        this.navigateToUser();
+
+
+                    } else {
+                        console.error('Unexpected role:', decodedToken.role);
+                    }
+
+                    await this.errorService.showSuccessMessage('Successfully logged in!');
+                }
+            } else {
+                console.error('Unexpected response:', response);
+            }
+        } catch (error) {
+            console.error('Login Error:', error);
+            this.errorService.handleHttpError(error);
+            this.errorService.showValidationError('Please fill in all fields correctly!');
+        }
+    }
+
+
+    private navigateToAdmin() {
     this.router.navigate(['/main']);
   }
 

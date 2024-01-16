@@ -4,8 +4,19 @@ using infrastructure;
 using infrastructure.Repository;
 using Microsoft.Net.Http.Headers;
 using service;
+using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(4);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+});
 
 //SETUP 
 
@@ -33,6 +44,9 @@ builder.Services.AddSingleton<ResponseHelper>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<PasswordHasher ,BCryptHashAlgorithm>();
 
+builder.Services.AddJwtService();
+builder.Services.AddSwaggerGenWithBearerJWT();
+
 //MIDDLEWARE
 builder.Services.AddCors();
 
@@ -47,6 +61,9 @@ if (builder.Environment.IsDevelopment())
 }
 
 var app = builder.Build();
+
+app.UseSession();
+
 app.UseCors(options =>
 {
     options.SetIsOriginAllowed(origin => true)
@@ -63,5 +80,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
+app.UseMiddleware<JwtBearerHandler>();
+
 app.UseMiddleware<GlobalExceptionHandler>();
 app.Run();

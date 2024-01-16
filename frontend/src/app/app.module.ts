@@ -1,7 +1,7 @@
 
 import { BrowserModule } from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AppRoutingModule} from "./app-routing.module";
 import {ProductService} from "./services/productService";
 import {HomeComponent} from "./components/userPages/home/home.component";
@@ -30,6 +30,9 @@ import { RouterModule } from '@angular/router';
 import { RegisterComponent } from './components/loginPage/register/register.component';
 import { CartComponent } from './components/userPages/cart/cart.component';
 import { CartService } from './services/cartService';
+import { ErrorHttpInterceptor } from './interceptors/error-http-interceptors';
+import { TokenService } from './services/TokenService';
+import { JwtModule } from '@auth0/angular-jwt';
 
 
 @NgModule({
@@ -49,7 +52,6 @@ import { CartService } from './services/cartService';
     CartComponent,
 
   ],
-
   imports: [
     BrowserAnimationsModule,
     BrowserModule,
@@ -59,24 +61,25 @@ import { CartService } from './services/cartService';
     FormsModule,
     CommonModule,
     MatSortModule,
-    MatDialogActions,
     MatDialogModule,
     ToastrModule.forRoot(),
-
-
-
-
-
-
-
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: () => {
+          return localStorage.getItem('token');
+        }
+      }
+    })
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorHttpInterceptor, multi: true },
     CartService,
     ProductService,
     CategoryService,
     SharedContentService,
     SharedFooterService,
-    SharedProductCategoryService],
+    SharedProductCategoryService,
+    TokenService],
 
   bootstrap: [AppComponent],
 

@@ -41,7 +41,7 @@
              id="roleAdmin"
              class="role"
              name="role"
-             value="admin"/>
+             value="Admin"/>
 
 
       <label for="roleUser">User</label>
@@ -50,7 +50,7 @@
              id="roleUser"
              class="role"
              name="role"
-             value="user"/>
+             value="User"/>
       <div *ngIf="loginForm.get('role')?.touched && loginForm.get('role')?.hasError('required')"
            style="color: red; font-size: 12px;">
         <span>Role Control Status: {{ loginForm.get('role')?.status }}</span>
