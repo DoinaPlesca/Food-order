@@ -62,8 +62,11 @@
     <div class="form-group">
       <label for="role">Role</label>
       <select id="role" formControlName="role">
-        <option *ngFor="let role of roles" [value]="role">
-          {{ role }}
+        <option [value]="0">
+          User
+        </option>
+        <option [value]="1">
+          Admin
         </option>
       </select>
       <div *ngIf="this.registerForm?.controls?.role?.touched && this.registerForm?.controls?.role?.invalid">

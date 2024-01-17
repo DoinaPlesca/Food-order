@@ -27,6 +27,7 @@ public class JwtBearerHandler
                     var data = jwtHelper.ValidateAndDecodeToken(token);
                     http.SetSessionData(data);
                 }
+              
             }
             catch (Exception e)
             {

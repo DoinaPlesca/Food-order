@@ -65,9 +65,10 @@ export class RegisterComponent implements  OnInit{
   async register() {
     if (this.registerForm.valid) {
       try {
+        const body = {...this.registerForm.value, role: Number.parseInt(this.registerForm.value.role ?? "0", 10)}
         const observable = this.http.post<any>(
           `${environment.BASE_URL}/register`,
-          this.registerForm.getRawValue()
+          body
         );
 
         const response = await firstValueFrom(observable);

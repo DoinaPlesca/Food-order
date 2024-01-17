@@ -24,8 +24,8 @@ public class SessionData
 
     public static class Keys
     {
-        public const string Id = "u";
-        public const string Role = "r";
+        public const string Id = "user";
+        public const string Role = "role";
     }
 }
     

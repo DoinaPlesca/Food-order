@@ -58,9 +58,12 @@ public class UserController : ControllerBase
         {
             var data = HttpContext.GetSessionData();
             var user = _userService.GetUserById(data);
+            
+            Console.WriteLine("User not found for data: " + data);
 
             if (user == null)
             {
+                Console.WriteLine("User not found for data: " + data);
                 return Unauthorized();  
             }
 
@@ -93,7 +96,7 @@ public class UserController : ControllerBase
                 username = newUser.Username,
                 email = newUser.Email,
                 password = newUser.Password,
-                //Role = newUser.Role
+                Role = newUser.Role
            
             };
             
@@ -130,12 +133,16 @@ public class UserController : ControllerBase
 
             var token = _jwtService.IssueToken(SessionData.FromUser(user));
 
-            
-            return Ok(new { Token = token });
+            var response = new TokenResponseDto()
+            {
+                Token = token
+            };
+
+            return Ok(response);
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, 
+            return StatusCode(StatusCodes.Status500InternalServerError,
                 _responseHelper.InternalServerError("Failed to perform login", ex.Message));
         }
     }

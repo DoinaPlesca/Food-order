@@ -55,55 +55,45 @@ export class LoginComponent implements OnInit {
     }
 
 
-
     async login() {
         try {
             const url = environment.BASE_URL + '/login';
-
+            const body = {...this.loginForm.value, role: Number.parseInt(this.loginForm.value.role ?? "0", 10)}
             const response = await firstValueFrom
-            (this.http.post<ResponseDto<{ token: string }>>(url, this.loginForm.value));
+            (this.http.post<{ token: string }>(url, body));
+
+            this.tokenService.setToken(response.token);
 
             console.log('Full Response:', response);
+            console.log('Received Token:', response.token);
 
+            const decodedToken = this.tokenService.getDecodedToken();
+            console.log('Decoded Token:', decodedToken);
 
-            if (response.messageToClient === 'Login successful' && response.responseData?.token) {
-
-                this.tokenService.setToken(response.responseData!.token);
-                console.log('Token set:', response.responseData!.token);
-
-
-                const decodedToken = this.tokenService.getDecodedToken();
-
-                console.log('Decoded Token:', decodedToken);
-
-                if (decodedToken && decodedToken.role) {
-                    console.log('User Role:', decodedToken.role);
-
-
-                    if (decodedToken.role === 'Admin') {
+            if (decodedToken && decodedToken.role) {
+                console.log('User Role:', decodedToken.role);
+                switch (decodedToken.role) {
+                    case 'Admin':
                         this.navigateToAdmin();
-
-
-                    } else if (decodedToken.role === 'User') {
+                        break;
+                    case 'User':
                         this.navigateToUser();
-
-
-                    } else {
+                        break;
+                    default:
                         console.error('Unexpected role:', decodedToken.role);
-                    }
-
-                    await this.errorService.showSuccessMessage('Successfully logged in!');
                 }
+
+                await this.errorService.showSuccessMessage('Successfully logged in!');
             } else {
-                console.error('Unexpected response:', response);
+                console.error('Role information not found in the decoded token.');
             }
         } catch (error) {
             console.error('Login Error:', error);
+
             this.errorService.handleHttpError(error);
             this.errorService.showValidationError('Please fill in all fields correctly!');
         }
     }
-
 
     private navigateToAdmin() {
     this.router.navigate(['/main']);
