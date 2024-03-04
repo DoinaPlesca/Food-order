@@ -6,6 +6,7 @@ using api.TransferModel.LoginModel;
 using BCrypt.Net;
 using infrastructure.DataModels;
 using infrastructure.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using service;
 
@@ -48,58 +49,35 @@ public class UserController : ControllerBase
     }
     
     
-    
+    [RequireAuthentication]
     [HttpGet]
     [Route("/api/restaurant/user/currently")]
-    [RequireAuthentication]
-    public IActionResult GetCurrentlyAuthenticatedUser()
+    public ResponseDto CurrentlyUser()
     {
-        try
+        var data = HttpContext.GetSessionData();
+        var user = _userService.GetUserById(data);
+        return new ResponseDto
         {
-            var data = HttpContext.GetSessionData();
-            var user = _userService.GetUserById(data);
-            
-            Console.WriteLine("User not found for data: " + data);
-
-            if (user == null)
-            {
-                Console.WriteLine("User not found for data: " + data);
-                return Unauthorized();  
-            }
-
-            var responseDto = new ResponseDto
-            {
-                ResponseData = user
-            };
-
-            return Ok(responseDto);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, _responseHelper.InternalServerError("Failed to retrieve user information", ex.Message));
-        }
+            ResponseData = user
+        };
     }
-
-
+    
 
     [HttpPost]
     [ValidateModel]
     [Route("/api/restaurant/register")]
     public IActionResult RegisterUser([FromBody] RegistrationRequest request)
-    {
+    { 
         try
         {
             var newUser = _userService.RegisterUser(request.username, request.email, request.password, request.Role);
-            
             var userResponse = new UserResponseDto
             {
                 username = newUser.Username,
                 email = newUser.Email,
-                password = newUser.Password,
                 Role = newUser.Role
            
             };
-            
             return Ok(userResponse);
         }
         catch (Exception ex)
@@ -128,11 +106,10 @@ public class UserController : ControllerBase
             }
 
             var user = _userService.GetUserByUsernameOrEmail(usernameOrEmail, role);
-
+            
             HttpContext.SetSessionData(SessionData.FromUser(user));
-
+           
             var token = _jwtService.IssueToken(SessionData.FromUser(user));
-
             var response = new TokenResponseDto()
             {
                 Token = token
@@ -148,24 +125,31 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
+    [RequireAuthentication] 
     [Route("/api/restaurant/logout")]
     public IActionResult Logout()
     {
         try
         {
-            var userData = HttpContext.Session.GetString("UserData");
+            var userData = HttpContext.Session.GetString("data");
+
+            if (string.IsNullOrEmpty(userData))
+            {
+                
+                return StatusCode(StatusCodes.Status401Unauthorized,
+                    _responseHelper.InternalServerError("User not authenticated", errorMessage: "fail"));
+            }
             
             HttpContext.Session.Clear();
-            
+
             return Ok(_responseHelper.Success(StatusCodes.Status200OK, "Logout successful"));
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, 
+            return StatusCode(StatusCodes.Status500InternalServerError,
                 _responseHelper.InternalServerError("Failed to perform logout", ex.Message));
         }
     }
-
 
 
 

@@ -9,7 +9,7 @@ public class SessionData
 
     public static SessionData FromUser(User user)
     {
-        return new SessionData { Id= user.Id, Role = user.Role };
+        return new SessionData { Id = user.Id, Role = user.Role };
     }
 
     public static SessionData FromDictionary(Dictionary<string, object> dict)

@@ -10,9 +10,6 @@ public class RequireAuthentication : ActionFilterAttribute
 {
     public override void OnActionExecuting(ActionExecutingContext context)
     {
-        if (context.HttpContext.GetSessionData() == null)
-        {
-            context.Result = new UnauthorizedResult();
-        }
+        if (context.HttpContext.GetSessionData() == null) throw new AuthenticationException();
     }
 }

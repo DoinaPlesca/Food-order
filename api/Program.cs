@@ -7,7 +7,7 @@ using service;
 using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 var builder = WebApplication.CreateBuilder(args);
-
+// Enable Session
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
@@ -81,6 +81,5 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 app.UseMiddleware<JwtBearerHandler>();
-
 app.UseMiddleware<GlobalExceptionHandler>();
 app.Run();

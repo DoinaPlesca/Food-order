@@ -17,6 +17,7 @@ import { TokenService } from 'src/app/services/TokenService';
 
 
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -83,7 +84,7 @@ export class LoginComponent implements OnInit {
                         console.error('Unexpected role:', decodedToken.role);
                 }
 
-                await this.errorService.showSuccessMessage('Successfully logged in!');
+                this.errorService.showSuccessMessage('Successfully logged in!');
             } else {
                 console.error('Role information not found in the decoded token.');
             }

@@ -58,6 +58,7 @@ public class UserRepository
             throw;
         }
     }
+    
 
     
     
@@ -71,6 +72,7 @@ public class UserRepository
         var user = conn.Query<User>(sql, new { Id = id }).SingleOrDefault();
 
         return user;
+       
     }
 
 

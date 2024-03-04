@@ -21,7 +21,7 @@ public class JwtBearerHandler
             try
             {
                 var authHeader = http.Request.Headers.Authorization.FirstOrDefault();
-                if (authHeader != null && authHeader.StartsWith("Bearer "))
+                if (authHeader != null && authHeader.StartsWith("Bearer"))
                 {
                     var token = authHeader.Split(" ")[1];
                     var data = jwtHelper.ValidateAndDecodeToken(token);

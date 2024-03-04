@@ -8,6 +8,8 @@ import { ErrorService } from 'src/app/services/errorService';
 import {HttpClient} from "@angular/common/http";
 import { environment } from 'src/app/environments/environment';
 import { TokenService } from 'src/app/services/TokenService';
+import { AuthService } from 'src/app/services/AuthService';
+import { Router } from '@angular/router';
 
 
 
@@ -30,10 +32,15 @@ export class HomeComponent implements OnInit {
     private sharedFooterService: SharedFooterService,
     private errorService: ErrorService,
     private http: HttpClient,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   async ngOnInit() {
+    if (!this.authService.isAuthenticatedUser() || this.authService.getCurrentUserRole() !== 'User') {
+      this.router.navigate(['/login']);
+    }
     this.sharedContent.nativeElement.innerHTML = this.sharedContentService.getSharedContent();
     this.sharedFooter.nativeElement.innerHTML = this.sharedFooterService.getFooterContent();
     this.loadAllProducts();

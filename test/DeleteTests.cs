@@ -16,6 +16,8 @@ public class DeleteTests : PageTest
         string categoryimageurl
     )
     {
+
+        //ARRANGE
         Helper.TriggerRebuild();
         int categoryId;
         await using (var conn = await Helper.DataSource.OpenConnectionAsync())
@@ -25,8 +27,10 @@ public class DeleteTests : PageTest
                 new { CategoryName = categoryname, CategoryImageUrl = categoryimageurl });
         }
 
+        //ACT
         var httpResponse = await new HttpClient().DeleteAsync(Helper.ApiBaseUrl + $"{categoryId}");
 
+        //ASSERT
         httpResponse.Should().BeSuccessful();
 
         await using (var conn = await Helper.DataSource.OpenConnectionAsync())
@@ -96,41 +100,42 @@ public class DeleteTests : PageTest
 
 
 }
+
 /*
 [TestCase("Test delete", "https://www.unfade.dk/wp-content/uploads/2022/12/Mystery-Box-Sprayer_All_5039_5.jpeg")]
 public async Task CategoryCanSuccessfullyBeDeletedFromUi(string categoryname, string categoryimageurl)
 {
 
-        // Arrange
-        Helper.TriggerRebuild();
+       // Arrange
+       Helper.TriggerRebuild();
 
-        await using (var conn = await Helper.DataSource.OpenConnectionAsync())
-        {
-            conn.QueryFirst<Category>(
-                "INSERT INTO food_order.category (categoryname, categoryimageurl) " +
-                "VALUES (@CategoryName, @CategoryImageUrl) " +
-                "RETURNING *;",
-                new
-                {
-                    categoryname = "Test delete",
-                    categoryimageurl =
-                        "https://www.unfade.dk/wp-content/uploads/2022/12/Mystery-Box-Sprayer_All_5039_5.jpeg"
-                });
-        }
+       await using (var conn = await Helper.DataSource.OpenConnectionAsync())
+       {
+           conn.QueryFirst<Category>(
+               "INSERT INTO food_order.category (categoryname, categoryimageurl) " +
+               "VALUES (@CategoryName, @CategoryImageUrl) " +
+               "RETURNING *;",
+               new
+               {
+                   categoryname = "Test delete",
+                   categoryimageurl =
+                       "https://www.unfade.dk/wp-content/uploads/2022/12/Mystery-Box-Sprayer_All_5039_5.jpeg"
+               });
+       }
 
-        await Page.GotoAsync(Helper.ApiBaseUrl);
-        var row = Page.GetByTestId("[data-testid='delete-box-action']").ClickAsync();
+       await Page.GotoAsync(Helper.ApiBaseUrl);
+       var row = Page.GetByTestId("[data-testid='delete-box-action']").ClickAsync();
 
 
-        // Assert
-        // Assert
-        await Expect(row).Not.ToBeVisibleAsync();
+       // Assert
+       // Assert
+       await Expect(row).Not.ToBeVisibleAsync();
 
-        // Verify that the category has been deleted from the database
-        await using (var conn = await Helper.DataSource.OpenConnectionAsync())
-        {
-            conn.ExecuteScalar<int>("SELECT COUNT(*) FROM food_order.category;").Should().Be(0);
-        }
-    }
-}
-*/
+       // Verify that the category has been deleted from the database
+       await using (var conn = await Helper.DataSource.OpenConnectionAsync())
+       {
+           conn.ExecuteScalar<int>("SELECT COUNT(*) FROM food_order.category;").Should().Be(0);
+       }
+   }
+   */
+

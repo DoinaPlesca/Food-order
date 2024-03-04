@@ -33,6 +33,8 @@ import { CartService } from './services/cartService';
 import { ErrorHttpInterceptor } from './interceptors/error-http-interceptors';
 import { TokenService } from './services/TokenService';
 import { JwtModule } from '@auth0/angular-jwt';
+import { AuthService } from './services/AuthService';
+import { AuthGuard } from './services/AuthGuard';
 
 
 @NgModule({
@@ -79,7 +81,9 @@ import { JwtModule } from '@auth0/angular-jwt';
     SharedContentService,
     SharedFooterService,
     SharedProductCategoryService,
-    TokenService],
+    TokenService,
+    AuthService,
+    AuthGuard],
 
   bootstrap: [AppComponent],
 
