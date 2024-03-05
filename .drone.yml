@@ -5,6 +5,9 @@ name: integration
 steps:
   - name: code_analysis
     image: boulundeasv/dotnet-sdk-with-java
+    environment:
+      SONARSECRET:
+        from_secret: SonarQubeSecret
     commands:
     - dotnet sonarscanner begin 
       /k:"easv-devops_week6_SonarQube_AY4NVRQqEVvRW2O60EV8" 
